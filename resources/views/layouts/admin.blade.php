@@ -89,14 +89,17 @@
                     <div x-show="openTransaksi" x-transition class="submenu ml-6 mt-2">
                         <a href="{{ route('orders.index') }}"
                             class="flex items-center gap-3 px-3 py-2 rounded-xl text-sm
-                            {{ request()->routeIs('orders.*')
+                            {{ request()->routeIs('orders.index')
                                 ? 'bg-cyan-600 text-white'
                                 : 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
                             <span class="w-2 h-2 rounded-full bg-current"></span>
                             <span>Daftar Pesanan</span>
                         </a>
-                        <a href="#"
-                            class="flex items-center gap-3 px-3 py-2 rounded-xl text-sm text-slate-400 hover:bg-slate-800 hover:text-white">
+                        <a href="{{ route('orders.riwayat') }}"
+                            class="flex items-center gap-3 px-3 py-2 rounded-xl text-sm
+                            {{ request()->routeIs('orders.riwayat')
+                                ? 'bg-cyan-600 text-white'
+                                : 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
                             <span class="w-2 h-2 rounded-full bg-current"></span>
                             <span>Riwayat Transaksi</span>
                         </a>

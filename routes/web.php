@@ -41,16 +41,16 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified', 'admin'])
     ->prefix('admin')
     ->group(function () {
-
     // Dashboard Admin
     Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-    
     // CRUD Produk
     Route::resource('product', ProductController::class);
-
+    //Riwayat
+    Route::get('/orders/riwayat', [OrderController::class, 'riwayat'])->name('orders.riwayat');
     // Admin kelola pesanan (Daftar, Hapus, Show, Edit, dll)
     Route::resource('orders', OrderController::class)->except(['store']);
-
     //kategori
     Route::resource('category', CategoryController::class)->only(['index', 'store', 'update', 'destroy']);
-});
+    
+
+    });

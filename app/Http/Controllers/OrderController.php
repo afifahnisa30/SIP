@@ -131,6 +131,32 @@ class OrderController extends Controller
         return redirect()->route('dashboard')->with('success', 'Pesanan Anda berhasil dikirim ke CV Salam Indah! Tim kami akan segera memproses berkas cetak Anda.');
     }
 
+    public function riwayat(Request $request)
+    {
+        $query = Order::with(['user', 'product'])
+                    ->where('diambil', true)
+                    ->latest();
+
+        if ($request->filled('search')) {
+            $query->whereHas('user', function($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        if ($request->filled('dari')) {
+            $query->whereDate('updated_at', '>=', $request->dari);
+        }
+
+        if ($request->filled('sampai')) {
+            $query->whereDate('updated_at', '<=', $request->sampai);
+        }
+
+        $totalPendapatan = (clone $query)->sum('total_harga');
+        $orders = $query->paginate(10)->appends(request()->query());
+        
+        return view('admin.orders.riwayat', compact('orders', 'totalPendapatan'));
+    }
+
     /**
      * Display the specified resource.
      */
