@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PengeluaranController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Models\Order;
@@ -45,12 +46,13 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     // CRUD Produk
     Route::resource('product', ProductController::class);
-    //Riwayat
+    //Riwayat Pesanan
     Route::get('/orders/riwayat', [OrderController::class, 'riwayat'])->name('orders.riwayat');
     // Admin kelola pesanan (Daftar, Hapus, Show, Edit, dll)
     Route::resource('orders', OrderController::class)->except(['store']);
     //kategori
     Route::resource('category', CategoryController::class)->only(['index', 'store', 'update', 'destroy']);
-    
+    //pengeluaran
+    Route::resource('pengeluaran', PengeluaranController::class)->only(['index', 'store', 'update', 'destroy']);
 
     });

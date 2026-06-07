@@ -68,78 +68,80 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
-                @forelse($categories as $i => $category)
-                <tr class="text-gray-700 hover:bg-slate-50 transition" x-data="{ editing: false }">
-                    <td class="px-6 py-4 text-gray-400">{{ $categories->firstItem() + $i }}</td>
+                    @forelse($categories as $i => $category)
+                    <tr class="text-gray-700 hover:bg-slate-50 transition" x-data="{ editing: false }">
+                        <td class="px-6 py-4 text-gray-400">{{ $categories->firstItem() + $i }}</td>
 
-                    {{-- Nama --}}
-                    <td class="px-6 py-4 font-medium">
-                        <span x-show="!editing">{{ $category->nama }}</span>
-                        <form x-show="editing" action="{{ route('category.update', $category->id) }}" method="POST" id="form-edit-{{ $category->id }}">
-                            @csrf
-                            @method('PUT')
-                            <input type="text" name="nama" value="{{ $category->nama }}"
+                        {{-- Nama --}}
+                        <td class="px-6 py-4 font-medium">
+                            <span x-show="!editing">{{ $category->nama }}</span>
+                            <input x-show="editing" type="text" name="nama" value="{{ $category->nama }}"
+                                form="form-edit-{{ $category->id }}"
                                 class="w-full py-2 px-3 text-sm border border-blue-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </td>
+                        </td>
 
-                    {{-- Deskripsi --}}
-                    <td class="px-6 py-4 text-gray-400 text-xs">
-                        <span x-show="!editing">{{ $category->deskripsi ?? '-' }}</span>
-                        <div x-show="editing">
-                            <input type="text" name="deskripsi" value="{{ $category->deskripsi }}" form="form-edit-{{ $category->id }}"
+                        {{-- Deskripsi --}}
+                        <td class="px-6 py-4 text-gray-400 text-xs">
+                            <span x-show="!editing">{{ $category->deskripsi ?? '-' }}</span>
+                            <input x-show="editing" type="text" name="deskripsi" value="{{ $category->deskripsi }}"
+                                form="form-edit-{{ $category->id }}"
                                 class="w-full py-2 px-3 text-sm border border-gray-200 rounded-xl focus:outline-none">
-                        </div>
-                    </td>
+                        </td>
 
-                    {{-- Jumlah Produk --}}
-                    <td class="px-6 py-4 text-center">
-                        <span class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-medium">
-                            {{ $category->products_count }} produk
-                        </span>
-                    </td>
+                        {{-- Jumlah Produk --}}
+                        <td class="px-6 py-4 text-center">
+                            <span class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-medium">
+                                {{ $category->products_count }} produk
+                            </span>
+                        </td>
 
-                    {{-- Aksi --}}
-                    <td class="px-6 py-4">
-                        <div class="flex items-center justify-center gap-2">
-                            {{-- Tombol Edit / Simpan --}}
-                            <button type="button" x-show="!editing" @click="editing = true"
-                                class="w-8 h-8 flex items-center justify-center bg-amber-50 text-amber-500 rounded-xl hover:bg-amber-100 transition">
-                                <i class="fas fa-pen text-xs"></i>
-                            </button>
-                            <button type="submit" x-show="editing" form="form-edit-{{ $category->id }}"
-                                class="w-8 h-8 flex items-center justify-center bg-emerald-50 text-emerald-500 rounded-xl hover:bg-emerald-100 transition">
-                                <i class="fas fa-check text-xs"></i>
-                            </button>
-
-                            {{-- Tombol Hapus / Batal --}}
-                            <div x-show="!editing">
-                                <form action="{{ route('category.destroy', $category->id) }}" method="POST"
-                                    onsubmit="return confirm('Yakin hapus kategori ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        class="w-8 h-8 flex items-center justify-center bg-red-50 text-red-400 rounded-xl hover:bg-red-100 transition">
-                                        <i class="fas fa-trash text-xs"></i>
-                                    </button>
-                                </form>
+                        {{-- Aksi --}}
+                        <td class="px-6 py-4">
+                            <div class="flex items-center justify-center gap-2">
+                                <button type="button" x-show="!editing" @click="editing = true"
+                                    class="w-8 h-8 flex items-center justify-center bg-amber-50 text-amber-500 rounded-xl hover:bg-amber-100 transition">
+                                    <i class="fas fa-pen text-xs"></i>
+                                </button>
+                                <button type="submit" x-show="editing" form="form-edit-{{ $category->id }}"
+                                    class="w-8 h-8 flex items-center justify-center bg-emerald-50 text-emerald-500 rounded-xl hover:bg-emerald-100 transition">
+                                    <i class="fas fa-check text-xs"></i>
+                                </button>
+                                <div x-show="!editing">
+                                    <form action="{{ route('category.destroy', $category->id) }}" method="POST"
+                                        onsubmit="return confirm('Yakin hapus kategori ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                            class="w-8 h-8 flex items-center justify-center bg-red-50 text-red-400 rounded-xl hover:bg-red-100 transition">
+                                            <i class="fas fa-trash text-xs"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                <button type="button" x-show="editing" @click="editing = false"
+                                    class="w-8 h-8 flex items-center justify-center bg-gray-50 text-gray-400 rounded-xl hover:bg-gray-100 transition">
+                                    <i class="fas fa-times text-xs"></i>
+                                </button>
                             </div>
-                            <button type="button" x-show="editing" @click="editing = false"
-                                class="w-8 h-8 flex items-center justify-center bg-gray-50 text-gray-400 rounded-xl hover:bg-gray-100 transition">
-                                <i class="fas fa-times text-xs"></i>
-                            </button>
-                        </div>
-                        </form>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="5" class="px-6 py-12 text-center text-gray-400 text-xs">
-                        <i class="fas fa-tags text-2xl mb-2 block"></i>
-                        Belum ada kategori. Tambahkan kategori pertama!
-                    </td>
-                </tr>
-                @endforelse
-            </tbody>
+                        </td>
+                    </tr>
+
+                    {{-- Form edit di luar tr --}}
+                    <form id="form-edit-{{ $category->id }}"
+                        action="{{ route('category.update', $category->id) }}"
+                        method="POST" style="display:none">
+                        @csrf
+                        @method('PUT')
+                    </form>
+
+                    @empty
+                    <tr>
+                        <td colspan="5" class="px-6 py-12 text-center text-gray-400 text-xs">
+                            <i class="fas fa-tags text-2xl mb-2 block"></i>
+                            Belum ada kategori. Tambahkan kategori pertama!
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
             </table>
         </div>
 
