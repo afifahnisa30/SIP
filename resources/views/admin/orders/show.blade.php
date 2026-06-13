@@ -117,12 +117,19 @@
                 </button>
             </form>
 
-            {{-- Tombol Tandai Diambil hanya muncul kalau status Selesai Cetak --}}
             @if($order->status == 'Selesai Cetak')
-            <form action="{{ route('orders.update', $order->id) }}" method="POST" class="mt-3">
+            <form action="{{ route('orders.update', $order->id) }}" method="POST" class="mt-4 space-y-3">
                 @csrf
                 @method('PUT')
                 <input type="hidden" name="diambil" value="1">
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Metode Pembayaran</label>
+                    <select name="metode_bayar"
+                        class="w-full py-2.5 px-4 text-sm text-gray-700 bg-slate-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        <option value="Tunai">Tunai</option>
+                        <option value="Transfer">Transfer</option>
+                    </select>
+                </div>
                 <button type="submit"
                     onclick="return confirm('Tandai pesanan ini sudah diambil pelanggan?')"
                     class="w-full bg-emerald-500 text-white text-sm font-bold py-2.5 rounded-xl hover:opacity-90 transition">
@@ -132,9 +139,13 @@
             @endif
 
             @else
-            {{-- Sudah diambil --}}
-            <div class="flex items-center gap-2 p-3 bg-emerald-50 text-emerald-600 rounded-xl text-sm font-medium">
-                <i class="fas fa-check-circle"></i> Pesanan sudah diambil pelanggan
+            <div class="space-y-2">
+                <div class="flex items-center gap-2 p-3 bg-emerald-50 text-emerald-600 rounded-xl text-sm font-medium">
+                    <i class="fas fa-check-circle"></i> Pesanan sudah diambil
+                </div>
+                <div class="flex items-center gap-2 p-3 bg-blue-50 text-blue-600 rounded-xl text-sm font-medium">
+                    <i class="fas fa-wallet"></i> Dibayar via {{ $order->metode_bayar }}
+                </div>
             </div>
             @endif
         </div>

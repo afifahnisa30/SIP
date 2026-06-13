@@ -129,13 +129,19 @@
                         </i>
                     </button>
                     <div x-show="openLaporan" x-transition class="submenu ml-6 mt-2">
-                        <a href="#"
-                            class="flex items-center gap-3 px-3 py-2 rounded-xl text-sm text-slate-400 hover:bg-slate-800 hover:text-white">
+                        <a href="{{ route('laporan.harian') }}"
+                            class="flex items-center gap-3 px-3 py-2 rounded-xl text-sm
+                            {{ request()->routeIs('laporan.harian')
+                                ? 'bg-cyan-600 text-white'
+                                : 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
                             <span class="w-2 h-2 rounded-full bg-current"></span>
                             <span>Laporan Harian</span>
                         </a>
-                        <a href="#"
-                            class="flex items-center gap-3 px-3 py-2 rounded-xl text-sm text-slate-400 hover:bg-slate-800 hover:text-white">
+                        <a href="{{ route('laporan.periode') }}"
+                            class="flex items-center gap-3 px-3 py-2 rounded-xl text-sm
+                            {{ request()->routeIs('laporan.periode')
+                                ? 'bg-cyan-600 text-white'
+                                : 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
                             <span class="w-2 h-2 rounded-full bg-current"></span>
                             <span>Laporan Periode</span>
                         </a>

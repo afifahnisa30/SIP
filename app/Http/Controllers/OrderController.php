@@ -181,7 +181,6 @@ class OrderController extends Controller
     {
         $order = Order::findOrFail($id);
 
-        // Update status
         if ($request->has('status')) {
             $request->validate([
                 'status' => 'required|in:Pending,Diproses,Selesai Cetak',
@@ -190,9 +189,14 @@ class OrderController extends Controller
             return redirect()->back()->with('success', 'Status pesanan berhasil diperbarui!');
         }
 
-        // Tandai sudah diambil
         if ($request->has('diambil')) {
-            $order->update(['diambil' => true]);
+            $request->validate([
+                'metode_bayar' => 'required|in:Tunai,Transfer',
+            ]);
+            $order->update([
+                'diambil'      => true,
+                'metode_bayar' => $request->metode_bayar,
+            ]);
             return redirect()->back()->with('success', 'Pesanan ditandai sudah diambil!');
         }
     }

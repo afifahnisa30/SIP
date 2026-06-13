@@ -6,6 +6,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PengeluaranController;
+use App\Http\Controllers\LaporanController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Models\Order;
@@ -55,4 +56,6 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     //pengeluaran
     Route::resource('pengeluaran', PengeluaranController::class)->only(['index', 'store', 'update', 'destroy']);
 
+    Route::get('/laporan/harian', [LaporanController::class, 'harian'])->name('laporan.harian');
+    Route::get('/laporan/periode', [LaporanController::class, 'periode'])->name('laporan.periode');
     });
