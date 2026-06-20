@@ -12,16 +12,31 @@ class AdminController extends Controller
     {
         $pendingCount   = Order::where('status', 'Pending')->count();
         $completedCount = Order::where('status', 'Selesai Cetak')->count();
-        $todayIncome    = Order::whereDate('created_at', today())
-                                ->whereIn('status', ['Selesai Cetak', 'Bisa Diambil'])
+        $todayIncome    = Order::whereDate('updated_at', today())
+                                ->where('diambil', true)
                                 ->sum('total_harga');
+
+        $monthIncome = Order::whereMonth('updated_at', now()->month)
+                            ->whereYear('updated_at', now()->year)
+                            ->where('diambil', true)
+                            ->sum('total_harga');
+
+        $totalProduct = \App\Models\Product::count();
 
         $chartData = [
             'Pending'       => Order::where('status', 'Pending')->count(),
             'Diproses'      => Order::where('status', 'Diproses')->count(),
             'Selesai Cetak' => Order::where('status', 'Selesai Cetak')->count(),
-            'Bisa Diambil'  => Order::where('status', 'Bisa Diambil')->count(),
         ];
+
+        $last7Days = collect(range(6, 0))->map(function($i) {
+            $date = now()->subDays($i);
+            return [
+                'label' => $date->format('d M'),
+                'count' => Order::whereDate('created_at', $date)->count(),
+                'income' => Order::whereDate('updated_at', $date)->where('diambil', true)->sum('total_harga'),
+            ];
+        });
 
         $recentOrders = Order::with(['user', 'product'])
                             ->latest()
@@ -30,7 +45,8 @@ class AdminController extends Controller
 
         return view('admin.dashboard', compact(
             'pendingCount', 'completedCount', 'todayIncome',
-            'chartData', 'recentOrders'
+            'monthIncome', 'totalProduct', 'chartData',
+            'last7Days', 'recentOrders'
         ));
     }
     /**

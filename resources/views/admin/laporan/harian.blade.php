@@ -32,7 +32,7 @@
     {{-- ===== KONTEN LAYAR (tersembunyi saat print) ===== --}}
     <div class="print:hidden">
 
-        {{-- REKAP + STAT --}}
+       {{-- REKAP + STAT --}}
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
 
             {{-- Rekap Kas --}}
@@ -82,25 +82,31 @@
 
             {{-- Stat Cards --}}
             <div class="flex flex-col gap-4">
-                <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex items-center gap-4">
-                    <div class="p-3 bg-emerald-50 text-emerald-500 rounded-2xl"><i class="fas fa-arrow-up"></i></div>
+                <div class="bg-[#059669] p-5 rounded-2xl shadow-lg text-white flex items-center gap-4">
+                    <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
+                        <i class="fas fa-arrow-up text-white"></i>
+                    </div>
                     <div>
-                        <p class="text-xs text-gray-400 uppercase tracking-widest">Total Pendapatan</p>
-                        <p class="text-xl font-black text-emerald-600 mt-0.5">Rp {{ number_format($totalPendapatan, 0, ',', '.') }}</p>
+                        <p class="text-xs text-emerald-100 uppercase tracking-widest">Total Pendapatan</p>
+                        <p class="text-xl font-black mt-0.5">Rp {{ number_format($totalPendapatan, 0, ',', '.') }}</p>
                     </div>
                 </div>
-                <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex items-center gap-4">
-                    <div class="p-3 bg-red-50 text-red-400 rounded-2xl"><i class="fas fa-arrow-down"></i></div>
+                <div class="bg-[#DC2626] p-5 rounded-2xl shadow-lg text-white flex items-center gap-4">
+                    <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
+                        <i class="fas fa-arrow-down text-white"></i>
+                    </div>
                     <div>
-                        <p class="text-xs text-gray-400 uppercase tracking-widest">Total Pengeluaran</p>
-                        <p class="text-xl font-black text-red-500 mt-0.5">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</p>
+                        <p class="text-xs text-red-100 uppercase tracking-widest">Total Pengeluaran</p>
+                        <p class="text-xl font-black mt-0.5">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</p>
                     </div>
                 </div>
-                <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex items-center gap-4">
-                    <div class="p-3 bg-blue-50 text-blue-500 rounded-2xl"><i class="fas fa-wallet"></i></div>
+                <div class="bg-[#2563EB] p-5 rounded-2xl shadow-lg text-white flex items-center gap-4">
+                    <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
+                        <i class="fas fa-wallet text-white"></i>
+                    </div>
                     <div>
-                        <p class="text-xs text-gray-400 uppercase tracking-widest">Laba Bersih</p>
-                        <p class="text-xl font-black {{ $labaBersih >= 0 ? 'text-blue-600' : 'text-red-500' }} mt-0.5">
+                        <p class="text-xs text-blue-100 uppercase tracking-widest">Laba Bersih</p>
+                        <p class="text-xl font-black mt-0.5">
                             Rp {{ number_format($labaBersih, 0, ',', '.') }}
                         </p>
                     </div>
@@ -130,7 +136,8 @@
                         @forelse($orders as $order)
                         <tr class="hover:bg-slate-50 transition">
                             <td class="px-5 py-3 text-gray-400">{{ $loop->iteration }}</td>
-                            <td class="px-5 py-3 font-medium text-gray-800">{{ $order->user->name }}</td>
+                            <td <td class="px-5 py-3 font-medium text-gray-800">
+                                {{ $order->user ? $order->user->name : $order->nama_pelanggan }}</td>
                             <td class="px-5 py-3 text-gray-700">{{ $order->product->nama }}</td>
                             <td class="px-5 py-3 text-xs text-gray-500">
                                 @if($order->panjang && $order->lebar) {{ $order->panjang }} x {{ $order->lebar }} m
@@ -210,8 +217,8 @@
             <div class="print-header-logo">
                 <img src="{{ asset('assets/img/logo.png') }}">
                 <div>
-                    <h1>SALAM INDAH</h1>
-                    <p>CV Salam Indah Group</p>
+                    <h1>PERCETAKAN SALAM INDAH</h1>
+                    <p>CV. Salam Indah Group</p>
                 </div>
             </div>
             <div class="print-header-info">
@@ -248,7 +255,7 @@
                 @forelse($orders as $order)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $order->user->name }}</td>
+                    <td>{{ $order->user ? $order->user->name : $order->nama_pelanggan }}</td>
                     <td>{{ $order->product->nama }}</td>
                     <td>@if($order->panjang && $order->lebar){{ $order->panjang }}x{{ $order->lebar }}m@elseif($order->quantity){{ $order->quantity }} pcs@else-@endif</td>
                     <td style="text-align:right">Rp {{ number_format($order->total_harga, 0, ',', '.') }}</td>

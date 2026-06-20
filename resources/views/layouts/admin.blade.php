@@ -163,13 +163,19 @@
                         </i>
                     </button>
                     <div x-show="openData" x-transition class="submenu ml-6 mt-2">
-                        <a href="#"
-                            class="flex items-center gap-3 px-3 py-2 rounded-xl text-sm text-slate-400 hover:bg-slate-800 hover:text-white">
+                        <a href="{{ route('data.pelanggan') }}"
+                            class="flex items-center gap-3 px-3 py-2 rounded-xl text-sm
+                            {{ request()->routeIs('data.pelanggan')
+                                ? 'bg-cyan-600 text-white'
+                                : 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
                             <span class="w-2 h-2 rounded-full bg-current"></span>
                             <span>Pelanggan</span>
                         </a>
-                        <a href="#"
-                            class="flex items-center gap-3 px-3 py-2 rounded-xl text-sm text-slate-400 hover:bg-slate-800 hover:text-white">
+                        <a href="{{ route('data.admin') }}"
+                            class="flex items-center gap-3 px-3 py-2 rounded-xl text-sm
+                            {{ request()->routeIs('data.admin')
+                                ? 'bg-cyan-600 text-white'
+                                : 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
                             <span class="w-2 h-2 rounded-full bg-current"></span>
                             <span>Admin</span>
                         </a>

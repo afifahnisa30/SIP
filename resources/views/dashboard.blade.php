@@ -1,29 +1,44 @@
 <x-app-layout>
     <div class="bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-700 text-white shadow-md">
-        <div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8 text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            
+            {{-- Kiri: Greeting --}}
             <div>
                 <h1 class="text-3xl sm:text-4xl font-black tracking-tight drop-shadow-sm">
-                    Halo, {{ Auth::user()->name }}! 👋
+                    Halo, {{ Auth::user()->name }}
                 </h1>
                 <p class="mt-2 text-blue-100 max-w-xl text-sm sm:text-base">
-                    Selamat datang di panel pemesanan resmi <span class="font-bold underline decoration-cyan-300 underline-offset-4">Percetakan Salam Indah</span>. Silakan pilih produk percetakan yang ingin Anda pesan.
+                    Selamat datang di panel pemesanan resmi 
+                    <span class="font-bold underline decoration-cyan-300 underline-offset-4">Percetakan Salam Indah</span>. 
+                    Silakan pilih produk percetakan yang ingin Anda pesan.
                 </p>
             </div>
-            <div class="flex gap-4 text-center">
-                {{-- Tambahkan di sebelah kanan header, dekat stat cards --}}
-                <a href="{{ route('orders.my') }}"
-                    class="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white text-sm font-semibold px-5 py-2.5 rounded-2xl transition">
-                    <i class="fas fa-box"></i> Pesanan Saya
-                </a>
-                <div class="bg-white/10 backdrop-blur-md p-4 px-6 rounded-2xl border border-white/20 shadow-lg">
-                    <span class="block text-2xl font-black">{{ $activeOrders }}</span>
-                    <span class="text-xs text-blue-100 font-medium">Pesanan Aktif</span>
+
+            {{-- Kanan: Stat Cards --}}
+            <div class="flex gap-4 shrink-0">
+                {{-- Card Pesanan Aktif --}}
+                <div class="bg-white/10 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/20 shadow-lg flex items-center gap-3 min-w-[150px] hover:bg-white/20 transition duration-200 cursor-pointer">
+                    <div class="w-10 h-10 bg-amber-400/30 rounded-xl flex items-center justify-center shrink-0">
+                        <i class="fas fa-clock text-amber-300 text-sm"></i>
+                    </div>
+                    <div class="text-left">
+                        <span class="block text-2xl font-black">{{ $activeOrders }}</span>
+                        <span class="text-[11px] text-blue-100 font-medium leading-tight">Pesanan Aktif</span>
+                    </div>
                 </div>
-                <div class="bg-white/10 backdrop-blur-md p-4 px-6 rounded-2xl border border-white/20 shadow-lg">
-                    <span class="block text-2xl font-black">{{ $completedOrders }}</span>
-                    <span class="text-xs text-blue-100 font-medium">Total Selesai</span>
+
+                {{-- Card Total Selesai --}}
+                <div class="bg-white/10 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/20 shadow-lg flex items-center gap-3 min-w-[150px] hover:bg-white/20 transition duration-200 cursor-pointer">        <div class="w-10 h-10 bg-emerald-400/30 rounded-xl flex items-center justify-center shrink-0">
+                        <i class="fas fa-check-circle text-emerald-300 text-sm"></i>
+                    </div>
+                    <div class="text-left">
+                        <span class="block text-2xl font-black">{{ $completedOrders }}</span>
+                        <span class="text-[11px] text-blue-100 font-medium leading-tight">Total Selesai</span>
+                    </div>
                 </div>
+
             </div>
+            
         </div>
     </div>
 

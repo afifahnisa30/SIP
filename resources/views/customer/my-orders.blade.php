@@ -3,7 +3,7 @@
     <div class="bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-700 text-white shadow-md">
         <div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
-                <h1 class="text-3xl font-black tracking-tight">Pesanan Saya 📦</h1>
+                <h1 class="text-3xl font-black tracking-tight"><i class="fas fa-box"></i> Pesanan Saya</h1>
                 <p class="mt-2 text-blue-100 text-sm">Pantau status pesanan cetakmu di sini.</p>
             </div>
             <a href="{{ route('dashboard') }}"
@@ -21,6 +21,30 @@
                     <i class="fas fa-check-circle"></i> {{ session('success') }}
                 </div>
             @endif
+
+            {{-- FILTER TABS --}}
+            <div class="flex gap-2 mb-6 flex-wrap">
+                <a href="{{ route('orders.my') }}"
+                    class="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold transition
+                    {{ !request('status') ? 'bg-blue-600 text-white shadow' : 'bg-white text-gray-500 hover:bg-gray-50 border border-gray-200' }}">
+                    <i class="fas fa-list text-xs"></i> Semua
+                </a>
+                <a href="{{ route('orders.my', ['status' => 'Pending']) }}"
+                    class="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold transition
+                    {{ request('status') == 'Pending' ? 'bg-amber-500 text-white shadow' : 'bg-white text-gray-500 hover:bg-gray-50 border border-gray-200' }}">
+                    <i class="fas fa-clock text-xs"></i> Pending
+                </a>
+                <a href="{{ route('orders.my', ['status' => 'Diproses']) }}"
+                    class="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold transition
+                    {{ request('status') == 'Diproses' ? 'bg-blue-500 text-white shadow' : 'bg-white text-gray-500 hover:bg-gray-50 border border-gray-200' }}">
+                    <i class="fas fa-spinner text-xs"></i> Diproses
+                </a>
+                <a href="{{ route('orders.my', ['status' => 'Selesai Cetak']) }}"
+                    class="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold transition
+                    {{ request('status') == 'Selesai Cetak' ? 'bg-emerald-500 text-white shadow' : 'bg-white text-gray-500 hover:bg-gray-50 border border-gray-200' }}">
+                    <i class="fas fa-check-circle text-xs"></i> Selesai Cetak
+                </a>
+            </div>
 
             @forelse($orders as $order)
             <div class="bg-white rounded-3xl border border-gray-100 shadow-sm mb-4 overflow-hidden">
@@ -45,8 +69,16 @@
                         };
                     @endphp
                     <span class="px-3 py-1 rounded-full text-xs font-bold {{ $statusColor }}">
-                        {{ $order->diambil ? '✅ Sudah Diambil' : $order->status }}
+                        {{ $order->diambil ? 'Sudah Diambil' : $order->status }}
                     </span>
+                </div>
+
+                {{-- Tombol Detail --}}
+                <div class="px-6 pb-3 flex justify-end">
+                    <a href="{{ route('orders.my.show', $order->id) }}"
+                        class="flex items-center gap-2 text-xs font-semibold text-blue-600 hover:text-blue-800 transition">
+                        <i class="fas fa-eye"></i> Lihat Detail
+                    </a>
                 </div>
 
                 {{-- Detail --}}
@@ -120,7 +152,9 @@
             @empty
             <div class="text-center py-16 bg-white rounded-3xl border border-gray-100 shadow-sm">
                 <i class="fas fa-inbox fa-3x text-gray-300 mb-3"></i>
-                <p class="text-gray-500 font-semibold">Belum ada pesanan</p>
+                <p class="text-gray-500 font-semibold">
+                    {{ request('status') ? 'Tidak ada pesanan dengan status ini' : 'Belum ada pesanan' }}
+                </p>
                 <p class="text-sm text-gray-400 mt-1">Yuk mulai pesan produk percetakan!</p>
                 <a href="{{ route('dashboard') }}"
                     class="mt-4 inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-bold px-6 py-2.5 rounded-full hover:opacity-90 transition">

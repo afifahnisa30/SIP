@@ -36,20 +36,46 @@ class OrderController extends Controller
      */
     public function create()
     {
-        //
+      $products = \App\Models\Product::orderBy('nama')->get();
+      return view('admin.orders.create', compact('products'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function myOrders()
+    public function myOrders(Request $request)
+    {
+        $query = Order::with('product')
+                    ->where('user_id', Auth::id())
+                    ->where('diambil', false) // ← hanya yang belum diambil
+                    ->latest();
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $orders = $query->paginate(10)->appends(request()->query());
+        return view('customer.my-orders', compact('orders'));
+    }
+
+    public function detailOrder(string $id)
+    {
+        $order = Order::with(['product'])
+                    ->where('user_id', Auth::id())
+                    ->findOrFail($id);
+
+        return view('customer.detail-order', compact('order'));
+    }
+
+    public function riwayatCustomer()
     {
         $orders = Order::with('product')
                     ->where('user_id', Auth::id())
+                    ->where('diambil', true)
                     ->latest()
                     ->paginate(10);
 
-        return view('customer.my-orders', compact('orders'));
+        return view('customer.riwayat', compact('orders'));
     }
     
     public function store(Request $request)
@@ -131,6 +157,71 @@ class OrderController extends Controller
         return redirect()->route('dashboard')->with('success', 'Pesanan Anda berhasil dikirim ke CV Salam Indah! Tim kami akan segera memproses berkas cetak Anda.');
     }
 
+        public function storeAdmin(Request $request)
+    {
+        $request->validate([
+            'nama_pelanggan' => 'required|string|max:255',
+            'no_telp'        => 'required|string|max:20',
+            'product_id'     => 'required|exists:products,id',
+            'file_desain'    => 'nullable|file|mimes:pdf,jpg,png,jpeg,tiff|max:20480',
+            'catatan'        => 'nullable|string',
+            'panjang'        => 'nullable|numeric|min:0.1',
+            'lebar'          => 'nullable|numeric|min:0.1',
+            'quantity'       => 'nullable|integer|min:1',
+            'metode_bayar'   => 'required|in:Tunai,Transfer',
+        ]);
+
+        $product = \App\Models\Product::findOrFail($request->product_id);
+        $totalHarga = 0;
+
+        if ($product->kategori === 'Spanduk' || $product->kategori === 'Stiker') {
+            $pCustomer = floatval($request->panjang);
+            $lCustomer = floatval($request->lebar);
+            $strUkuran = $product->ukuran_standar;
+            $bahanStandar = $strUkuran ? array_map('floatval', explode(',', $strUkuran)) : [1, 1.5, 2, 3];
+            sort($bahanStandar);
+            $pFinal = $pCustomer;
+            $lFinal = $lCustomer;
+            if ($pCustomer > 0 && $lCustomer > 0) {
+                foreach ($bahanStandar as $size) {
+                    if ($size >= $lCustomer) { $lFinal = $size; break; }
+                }
+            }
+            $totalHarga = $pFinal * $lFinal * $product->harga_dasar;
+        } else {
+            $qty = intval($request->quantity) ?: 1;
+            $totalHarga = $qty * $product->harga_dasar;
+        }
+
+        $totalHargaFinal = ceil($totalHarga / 5000) * 5000;
+
+        $pathFileDesain = null;
+        if ($request->hasFile('file_desain')) {
+            $file = $request->file('file_desain');
+            $namaFile = 'order_' . time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/desain'), $namaFile);
+            $pathFileDesain = 'uploads/desain/' . $namaFile;
+        }
+
+        Order::create([
+            'user_id'        => null,
+            'nama_pelanggan' => $request->nama_pelanggan,
+            'no_telp'        => $request->no_telp,
+            'product_id'     => $product->id,
+            'panjang'        => $request->panjang,
+            'lebar'          => $request->lebar,
+            'quantity'       => $request->quantity,
+            'file_desain'    => $pathFileDesain,
+            'catatan'        => $request->catatan,
+            'total_harga'    => $totalHargaFinal,
+            'metode_bayar'   => $request->metode_bayar,
+            'status'         => 'Diproses',
+            'diambil'        => false,
+        ]);
+
+        return redirect()->route('orders.index')->with('success', 'Pesanan offline berhasil ditambahkan!');
+    }
+
     public function riwayat(Request $request)
     {
         $query = Order::with(['user', 'product'])
@@ -151,10 +242,25 @@ class OrderController extends Controller
             $query->whereDate('updated_at', '<=', $request->sampai);
         }
 
-        $totalPendapatan = (clone $query)->sum('total_harga');
+        // Cards — default hari ini, kalau ada filter ikut filter
+        $cardQuery = Order::where('diambil', true);
+        if ($request->filled('dari') && $request->filled('sampai')) {
+            $cardQuery->whereDate('updated_at', '>=', $request->dari)
+                    ->whereDate('updated_at', '<=', $request->sampai);
+        } else {
+            $cardQuery->whereDate('updated_at', today()); // ← default hari ini
+        }
+
+        $cardOrders          = $cardQuery->get();
+        $totalTransaksi      = $cardOrders->sum('total_harga');
+        $transaksiTunai      = $cardOrders->where('metode_bayar', 'Tunai')->sum('total_harga');
+        $transaksiTransfer   = $cardOrders->where('metode_bayar', 'Transfer')->sum('total_harga');
+
         $orders = $query->paginate(10)->appends(request()->query());
-        
-        return view('admin.orders.riwayat', compact('orders', 'totalPendapatan'));
+
+        return view('admin.orders.riwayat', compact(
+            'orders', 'totalTransaksi', 'transaksiTunai', 'transaksiTransfer'
+        ));
     }
 
     /**

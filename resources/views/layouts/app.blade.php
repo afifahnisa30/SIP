@@ -16,7 +16,24 @@
 
         <!-- Styles -->
         @livewireStyles
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     </head>
+
+    {{-- Floating WA Button --}}
+    @auth
+        @if(Auth::user()->role === 'customer')
+        <a href="https://wa.me/6282189346164?text=Halo%20Salam%20Indah%2C%20saya%20ingin%20bertanya%20mengenai%20produk%20percetakan"
+            target="_blank"
+            class="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold px-5 py-3.5 rounded-2xl shadow-lg hover:shadow-xl transition duration-200">
+            <i class="fab fa-whatsapp text-2xl"></i>
+            <div class="text-left">
+                <p class="text-xs leading-tight opacity-80">Butuh bantuan?</p>
+                <p class="text-sm leading-tight">Chat Kami</p>
+            </div>
+        </a>
+        @endif
+    @endauth
+
     <body class="font-sans antialiased">
         <x-banner />
 

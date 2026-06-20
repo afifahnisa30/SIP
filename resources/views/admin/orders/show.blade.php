@@ -84,16 +84,22 @@
     <div class="space-y-6">
 
         {{-- Info Pelanggan --}}
-        <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-            <h3 class="text-sm font-bold text-gray-700 mb-4 uppercase tracking-widest">Info Pelanggan</h3>
-            <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-sm">
-                    {{ strtoupper(substr($order->user->name, 0, 1)) }}
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-sm">
+                {{ strtoupper(substr($order->user ? $order->user->name : $order->nama_pelanggan, 0, 1)) }}
+            </div>
+            <div>
+                <div class="font-semibold text-gray-800 text-sm">
+                    {{ $order->user ? $order->user->name : $order->nama_pelanggan }}
                 </div>
-                <div>
-                    <div class="font-semibold text-gray-800 text-sm">{{ $order->user->name }}</div>
-                    <div class="text-xs text-gray-400">{{ $order->user->email }}</div>
+                <div class="text-xs text-gray-400">
+                    {{ $order->user ? $order->user->email : $order->no_telp }}
                 </div>
+                @if(!$order->user)
+                <span class="text-xs bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full font-medium">
+                    Pelanggan Offline
+                </span>
+                @endif
             </div>
         </div>
 

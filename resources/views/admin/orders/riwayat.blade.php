@@ -7,10 +7,43 @@
         <h2 class="text-xl font-bold text-gray-800">Riwayat Transaksi</h2>
         <p class="text-xs text-gray-400 mt-1">Pesanan yang sudah selesai dan diambil pelanggan</p>
     </div>
-    {{-- Total Pendapatan --}}
-    <div class="bg-emerald-50 border border-emerald-200 px-5 py-3 rounded-2xl text-right">
-        <p class="text-xs text-emerald-500 font-medium uppercase tracking-widest">Total Pendapatan</p>
-        <p class="text-lg font-black text-emerald-600">Rp {{ number_format($totalPendapatan, 0, ',', '.') }}</p>
+</div>
+
+{{-- STAT CARDS --}}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+    <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 p-5 rounded-2xl shadow-lg text-white">
+        <div class="flex items-center justify-between mb-3">
+            <div class="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center">
+                <i class="fas fa-wallet text-white text-sm"></i>
+            </div>
+            <span class="text-xs bg-white/20 px-2 py-1 rounded-full font-medium">
+                {{ request('dari') && request('sampai') ? request('dari') . ' s/d ' . request('sampai') : 'Hari ini' }}
+            </span>
+        </div>
+        <p class="text-xl font-black mb-0.5">Rp {{ number_format($totalTransaksi, 0, ',', '.') }}</p>
+        <p class="text-xs text-emerald-100 uppercase tracking-widest font-medium">Total Transaksi</p>
+    </div>
+
+    <div class="bg-[#2563EB] p-5 rounded-2xl shadow-lg text-white">
+        <div class="flex items-center justify-between mb-3">
+            <div class="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center">
+                <i class="fas fa-money-bill-wave text-white text-sm"></i>
+            </div>
+            <span class="text-xs bg-white/20 px-2 py-1 rounded-full font-medium">Tunai</span>
+        </div>
+        <p class="text-xl font-black mb-0.5">Rp {{ number_format($transaksiTunai, 0, ',', '.') }}</p>
+        <p class="text-xs text-amber-100 uppercase tracking-widest font-medium">Pembayaran Tunai</p>
+    </div>
+
+    <div class="bg-[#7C3AED] p-5 rounded-2xl shadow-lg text-white">
+        <div class="flex items-center justify-between mb-3">
+            <div class="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center">
+                <i class="fas fa-university text-white text-sm"></i>
+            </div>
+            <span class="text-xs bg-white/20 px-2 py-1 rounded-full font-medium">Transfer</span>
+        </div>
+        <p class="text-xl font-black mb-0.5">Rp {{ number_format($transaksiTransfer, 0, ',', '.') }}</p>
+        <p class="text-xs text-purple-100 uppercase tracking-widest font-medium">Pembayaran Transfer</p>
     </div>
 </div>
 
@@ -70,8 +103,8 @@
                         {{ ($orders->currentPage() - 1) * $orders->perPage() + $loop->iteration }}
                     </td>
                     <td class="px-6 py-4">
-                        <div class="font-medium text-gray-800">{{ $order->user->name }}</div>
-                        <div class="text-xs text-gray-400">{{ $order->user->email }}</div>
+                        <div class="font-medium text-gray-800">{{ $order->user ? $order->user->name : $order->nama_pelanggan }}</div>
+                        <div class="text-xs text-gray-400">{{ $order->user ? $order->user->phone_number : $order->no_telp }}</div>
                     </td>
                     <td class="px-6 py-4 font-medium">{{ $order->product->nama }}</td>
                     <td class="px-6 py-4 text-xs text-gray-500">

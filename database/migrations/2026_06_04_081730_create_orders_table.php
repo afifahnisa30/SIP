@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('quantity')->nullable();
             
             // Detail file desain, catatan tambahan, dan harga final setelah pembulatan
-            $table->string('file_desain');
+            $table->string('file_desain')->nullable();;
             $table->text('catatan')->nullable();
             $table->integer('total_harga');
             

@@ -26,12 +26,32 @@ class PengeluaranController extends Controller
             $query->whereDate('tanggal', '<=', $request->sampai);
         }
 
-        $totalPengeluaran = (clone $query)->sum('harga');
+        // Cards — default hari ini, kalau ada filter ikut filter
+        $cardQuery = Pengeluaran::query();
+        if ($request->filled('dari') && $request->filled('sampai')) {
+            $cardQuery->whereDate('tanggal', '>=', $request->dari)
+                    ->whereDate('tanggal', '<=', $request->sampai);
+        } elseif ($request->filled('dari')) {
+            $cardQuery->whereDate('tanggal', $request->dari);
+        } else {
+            $cardQuery->whereDate('tanggal', today()); // ← default hari ini
+        }
+
+        if ($request->filled('kategori')) {
+            $cardQuery->where('kategori', $request->kategori);
+        }
+
+        $totalPengeluaran    = (clone $cardQuery)->sum('harga');
+        $pengeluaranTunai    = (clone $cardQuery)->where('metode_bayar', 'Tunai')->sum('harga');
+        $pengeluaranTransfer = (clone $cardQuery)->where('metode_bayar', 'Transfer')->sum('harga');
+
         $pengeluaran = $query->paginate(10)->appends(request()->query());
 
-        return view('admin.pengeluaran.index', compact('pengeluaran', 'totalPengeluaran'));
+        return view('admin.pengeluaran.index', compact(
+            'pengeluaran', 'totalPengeluaran',
+            'pengeluaranTunai', 'pengeluaranTransfer'
+        ));
     }
-
     /**
      * Show the form for creating a new resource.
      */

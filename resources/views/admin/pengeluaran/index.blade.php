@@ -7,15 +7,47 @@
         <h2 class="text-xl font-bold text-gray-800">Pengeluaran</h2>
         <p class="text-xs text-gray-400 mt-1">Catat biaya operasional CV Salam Indah</p>
     </div>
-    <div class="flex items-center gap-3">
-        <div class="bg-red-50 border border-red-200 px-5 py-3 rounded-2xl text-right">
-            <p class="text-xs text-red-400 font-medium uppercase tracking-widest">Total Pengeluaran</p>
-            <p class="text-lg font-black text-red-500">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</p>
+    <button onclick="openTambahModal()"
+        class="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-semibold px-5 py-2.5 rounded-2xl shadow hover:opacity-90 transition">
+        <i class="fas fa-plus"></i> Tambah Pengeluaran
+    </button>
+</div>
+
+{{-- STAT CARDS --}}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+    <div class="bg-[#DC2626] p-5 rounded-2xl shadow-lg text-white">
+        <div class="flex items-center justify-between mb-3">
+            <div class="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center">
+                <i class="fas fa-receipt text-white text-sm"></i>
+            </div>
+            <span class="text-xs bg-white/20 px-2 py-1 rounded-full font-medium">
+                {{ request('dari') && request('sampai') ? request('dari') . ' s/d ' . request('sampai') : 'Hari ini' }}
+            </span>
         </div>
-        <button onclick="openTambahModal()"
-            class="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-semibold px-5 py-2.5 rounded-2xl shadow hover:opacity-90 transition">
-            <i class="fas fa-plus"></i> Tambah Pengeluaran
-        </button>
+        <p class="text-xl font-black mb-0.5">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</p>
+        <p class="text-xs text-red-100 uppercase tracking-widest font-medium">Total Pengeluaran</p>
+    </div>
+
+    <div class="bg-[#2563EB] p-5 rounded-2xl shadow-lg text-white">
+        <div class="flex items-center justify-between mb-3">
+            <div class="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center">
+                <i class="fas fa-money-bill-wave text-white text-sm"></i>
+            </div>
+            <span class="text-xs bg-white/20 px-2 py-1 rounded-full font-medium">Tunai</span>
+        </div>
+        <p class="text-xl font-black mb-0.5">Rp {{ number_format($pengeluaranTunai, 0, ',', '.') }}</p>
+        <p class="text-xs text-amber-100 uppercase tracking-widest font-medium">Pengeluaran Tunai</p>
+    </div>
+
+    <div class="bg-[#7C3AED] p-5 rounded-2xl shadow-lg text-white">
+        <div class="flex items-center justify-between mb-3">
+            <div class="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center">
+                <i class="fas fa-university text-white text-sm"></i>
+            </div>
+            <span class="text-xs bg-white/20 px-2 py-1 rounded-full font-medium">Transfer</span>
+        </div>
+        <p class="text-xl font-black mb-0.5">Rp {{ number_format($pengeluaranTransfer, 0, ',', '.') }}</p>
+        <p class="text-xs text-purple-100 uppercase tracking-widest font-medium">Pengeluaran Transfer</p>
     </div>
 </div>
 
@@ -36,10 +68,18 @@
         <option value="Expedisi" {{ request('kategori') == 'Expedisi' ? 'selected' : '' }}>Expedisi</option>
         <option value="Umum" {{ request('kategori') == 'Umum' ? 'selected' : '' }}>Umum</option>
     </select>
-    <input type="date" name="dari" value="{{ request('dari') }}"
-        class="py-2.5 px-4 text-sm text-gray-700 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-    <input type="date" name="sampai" value="{{ request('sampai') }}"
-        class="py-2.5 px-4 text-sm text-gray-700 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+
+    <div class="flex items-center gap-2">
+        <label class="text-sm text-gray-500 font-medium">Dari</label>
+        <input type="date" name="dari" value="{{ request('dari', today()->toDateString()) }}"
+            class="py-2.5 px-4 text-sm text-gray-700 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+    </div>
+    <div class="flex items-center gap-2">
+        <label class="text-sm text-gray-500 font-medium">Sampai</label>
+        <input type="date" name="sampai" value="{{ request('sampai', today()->toDateString()) }}"
+            class="py-2.5 px-4 text-sm text-gray-700 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+    </div>
+
     <button type="submit"
         class="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-semibold rounded-2xl hover:opacity-90 transition">
         <i class="fas fa-filter mr-1"></i> Filter

@@ -7,6 +7,10 @@
         <h2 class="text-xl font-bold text-gray-800">Daftar Pesanan</h2>
         <p class="text-xs text-gray-400 mt-1">Kelola semua pesanan masuk dari pelanggan</p>
     </div>
+    <a href="{{ route('orders.create') }}"
+        class="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-semibold px-5 py-2.5 rounded-2xl shadow hover:opacity-90 transition">
+        <i class="fas fa-plus"></i> Tambah Pesanan
+    </a>
 </div>
 
 @if(session('success'))
@@ -43,6 +47,7 @@
         <i class="fas fa-times mr-1"></i> Reset
     </a>
     @endif
+    
 </form>
 
 {{-- TABEL --}}
@@ -68,8 +73,12 @@
                         {{ ($orders->currentPage() - 1) * $orders->perPage() + $loop->iteration }}
                     </td>
                     <td class="px-6 py-4">
-                        <div class="font-medium text-gray-800">{{ $order->user->name }}</div>
-                        <div class="text-xs text-gray-400">{{ $order->user->email }}</div>
+                        <div class="font-medium text-gray-800">
+                            {{ $order->user ? $order->user->name : $order->nama_pelanggan }}
+                        </div>
+                        <div class="text-xs text-gray-400">
+                            {{ $order->user ? $order->user->phone_number: $order->no_telp }}
+                        </div>
                     </td>
                     <td class="px-6 py-4 font-medium">{{ $order->product->nama }}</td>
                     <td class="px-6 py-4 text-xs text-gray-500">

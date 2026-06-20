@@ -7,6 +7,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PengeluaranController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\DataController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Models\Order;
@@ -14,9 +15,7 @@ use App\Models\Order;
 // Rute Home
 Route::get('/', function () { return view('welcome'); });
 
-// ==========================================
 // RUTE CUSTOMER (User Biasa)
-// ==========================================
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
     
     Route::get('/dashboard', function () {
@@ -32,14 +31,14 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
     // Customer hanya bisa store order
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
-
     Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('orders.my');
+    Route::get('/my-orders/{id}', [OrderController::class, 'detailOrder'])->name('orders.my.show');
+    Route::get('/riwayat', [OrderController::class, 'riwayatCustomer'])->name('orders.riwayat.customer');
+    Route::get('/panduan', function () {return view('customer.panduan');
+})->name('panduan');
     });
 
-// ==========================================
 // RUTE ADMIN
-// ==========================================
-// Pastikan middleware 'admin' sudah didaftarkan di Kernel.php atau bootstrap/app.php
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified', 'admin'])
     ->prefix('admin')
     ->group(function () {
@@ -49,13 +48,23 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::resource('product', ProductController::class);
     //Riwayat Pesanan
     Route::get('/orders/riwayat', [OrderController::class, 'riwayat'])->name('orders.riwayat');
+    Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
+    Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
+    Route::post('/orders/store-admin', [OrderController::class, 'storeAdmin'])->name('orders.storeAdmin');
     // Admin kelola pesanan (Daftar, Hapus, Show, Edit, dll)
     Route::resource('orders', OrderController::class)->except(['store']);
     //kategori
     Route::resource('category', CategoryController::class)->only(['index', 'store', 'update', 'destroy']);
     //pengeluaran
     Route::resource('pengeluaran', PengeluaranController::class)->only(['index', 'store', 'update', 'destroy']);
-
+    //laporan
     Route::get('/laporan/harian', [LaporanController::class, 'harian'])->name('laporan.harian');
     Route::get('/laporan/periode', [LaporanController::class, 'periode'])->name('laporan.periode');
+    //data pengguna
+    Route::get('/data/pelanggan', [DataController::class, 'pelanggan'])->name('data.pelanggan');
+    Route::get('/data/admin', [DataController::class, 'admin'])->name('data.admin');
+    Route::post('/data/admin/tambah', [DataController::class, 'tambahAdmin'])->name('data.tambahAdmin');
+    Route::get('/data/{id}/edit', [DataController::class, 'edit'])->name('data.edit');
+    Route::put('/data/{id}', [DataController::class, 'update'])->name('data.update');
+    Route::delete('/data/{id}', [DataController::class, 'destroy'])->name('data.destroy');
     });
