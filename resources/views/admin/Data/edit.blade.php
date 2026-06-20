@@ -55,6 +55,14 @@
                     <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
                 </select>
             </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1">Tipe Pelanggan</label>
+                <select name="tipe"
+                    class="w-full py-2.5 px-4 text-sm text-gray-700 bg-slate-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    <option value="Umum" {{ old('tipe', $user->tipe) == 'Umum' ? 'selected' : '' }}>Umum</option>
+                    <option value="Reseller" {{ old('tipe', $user->tipe) == 'Reseller' ? 'selected' : '' }}>Reseller</option>
+                </select>
+            </div>
 
             <div class="pt-4">
                 <button type="submit"

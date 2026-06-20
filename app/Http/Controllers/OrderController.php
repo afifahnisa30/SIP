@@ -94,6 +94,14 @@ class OrderController extends Controller
         $product = Product::findOrFail($request->product_id);
         $totalHarga = 0;
 
+        // Setelah ambil product, tambahkan ini
+        $hargaDasar = $product->harga_dasar;
+
+        // Cek apakah customer adalah reseller
+        if (Auth::check() && Auth::user()->tipe === 'Reseller' && $product->harga_reseller) {
+            $hargaDasar = $product->harga_reseller;
+        }
+
         // 3. Logika Perhitungan Ulang di Sisi Server (Mencegah Manipulasi Harga)
         if ($product->kategori === 'Spanduk' || $product->kategori === 'Stiker') {
             $pCustomer = floatval($request->panjang);
@@ -119,11 +127,11 @@ class OrderController extends Controller
 
             // Hitung luas meter persegi dan kalikan dengan harga dasar
             $luasMeter = $pFinal * $lFinal;
-            $totalHarga = $luasMeter * $product->harga_dasar;
+            $totalHarga = $luasMeter * $hargaDasar;
         } else {
             // Hitung kuantitas lembaran biasa untuk Brosur / Kartu Nama
             $qty = intval($request->quantity) ?: 1;
-            $totalHarga = $qty * $product->harga_dasar;
+            $totalHarga = $qty * $hargaDasar;
         }
 
         // 4. Pembulatan Ke Atas Kelipatan Rp 5.000 (Sesuai Tampilan di Customer)
@@ -263,6 +271,27 @@ class OrderController extends Controller
         ));
     }
 
+    public function piutang(Request $request)
+    {
+        $query = Order::with(['user', 'product'])
+                    ->where('diambil', true)
+                    ->where('status_bayar', 'Belum Lunas')
+                    ->latest();
+
+        if ($request->filled('search')) {
+            $query->where(function($q) use ($request) {
+                $q->whereHas('user', function($q2) use ($request) {
+                    $q2->where('name', 'like', '%' . $request->search . '%');
+                })->orWhere('nama_pelanggan', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        $orders = $query->paginate(10)->appends(request()->query());
+        $totalPiutang = Order::where('diambil', true)->where('status_bayar', 'Belum Lunas')->sum('total_harga');
+
+        return view('admin.orders.piutang', compact('orders', 'totalPiutang'));
+    }
+
     /**
      * Display the specified resource.
      */
@@ -298,12 +327,27 @@ class OrderController extends Controller
         if ($request->has('diambil')) {
             $request->validate([
                 'metode_bayar' => 'required|in:Tunai,Transfer',
+                'status_bayar' => 'required|in:Lunas,Belum Lunas',
             ]);
             $order->update([
                 'diambil'      => true,
                 'metode_bayar' => $request->metode_bayar,
+                'status_bayar' => $request->status_bayar,
+                'tanggal_bayar' => $request->status_bayar == 'Lunas' ? now() : null,
             ]);
             return redirect()->back()->with('success', 'Pesanan ditandai sudah diambil!');
+        }
+
+        // Update status bayar saja
+        if ($request->has('status_bayar')) {
+            $request->validate([
+                'status_bayar' => 'required|in:Lunas,Belum Lunas',
+            ]);
+            $order->update([
+                'status_bayar'  => $request->status_bayar,
+                'tanggal_bayar' => $request->status_bayar == 'Lunas' ? now() : null,
+            ]);
+            return redirect()->back()->with('success', 'Status pembayaran berhasil diperbarui!');
         }
     }
     /**

@@ -6,7 +6,7 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
 
     {{-- Card 4 - Total Pelanggan --}}
-    <div class="bg-[#0891B2] p-6 rounded-2xl shadow-lg text-white">
+    <div class="bg-[#0891B2] p-6 rounded-2xl shadow-lg text-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 ease-in-out">
         <div class="flex items-center justify-between mb-4">
             <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
                 <i class="fas fa-box-open text-white"></i>
@@ -18,7 +18,7 @@
     </div>
     
     {{-- Card 1 - Pesanan Masuk --}}
-    <div class="bg-[#7C3AED] p-6 rounded-2xl shadow-lg text-white">
+    <div class="bg-[#7C3AED] p-6 rounded-2xl shadow-lg text-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 ease-in-out">
         <div class="flex items-center justify-between mb-4">
             <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
                 <i class="fas fa-clock text-white"></i>
@@ -30,7 +30,7 @@
     </div>
 
     {{-- Card 2 - Selesai Cetak --}}
-    <div class="bg-[#2563EB] p-6 rounded-2xl shadow-lg text-white">
+    <div class="bg-[#2563EB] p-6 rounded-2xl shadow-lg text-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 ease-in-out">
         <div class="flex items-center justify-between mb-4">
             <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
                 <i class="fas fa-check-circle text-white"></i>
@@ -42,7 +42,7 @@
     </div>
 
     {{-- Card 3 - Pendapatan --}}
-    <div class="bg-[#059669] p-6 rounded-2xl shadow-lg text-white">
+    <div class="bg-[#059669] p-6 rounded-2xl shadow-lg text-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 ease-in-out">
         <div class="flex items-center justify-between mb-4">
             <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
                 <i class="fas fa-wallet text-white"></i>

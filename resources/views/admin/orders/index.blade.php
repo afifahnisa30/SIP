@@ -34,6 +34,7 @@
         <option value="Diproses" {{ request('status') == 'Diproses' ? 'selected' : '' }}>Diproses</option>
         <option value="Selesai Cetak" {{ request('status') == 'Selesai Cetak' ? 'selected' : '' }}>Selesai Cetak</option>
         <option value="Bisa Diambil" {{ request('status') == 'Bisa Diambil' ? 'selected' : '' }}>Bisa Diambil</option>
+
     </select>
 
     <button type="submit"
@@ -102,9 +103,16 @@
                                 default         => 'bg-gray-100 text-gray-600',
                             };
                         @endphp
-                        <span class="px-2 py-1 rounded-full text-xs font-medium {{ $statusColor }}">
-                            {{ $order->diambil ? 'Sudah Diambil' : $order->status }}
-                        </span>
+                        <div class="flex flex-col gap-1">
+                            <span class="px-2 py-1 rounded-full text-xs font-medium w-fit {{ $statusColor }}">
+                                {{ $order->diambil ? 'Diambil' : $order->status }}
+                            </span>
+                            @if($order->diambil)
+                            <span class="px-2 py-1 rounded-full text-xs font-medium w-fit {{ $order->status_bayar == 'Lunas' ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600' }}">
+                                {{ $order->status_bayar }}
+                            </span>
+                            @endif
+                        </div>
                     </td>
                     <td class="px-6 py-4 text-xs text-gray-400 whitespace-nowrap">
                         {{ $order->created_at->format('d M Y') }}

@@ -136,12 +136,39 @@
                         <option value="Transfer">Transfer</option>
                     </select>
                 </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Status Pembayaran</label>
+                    <select name="status_bayar"
+                        class="w-full py-2.5 px-4 text-sm text-gray-700 bg-slate-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        <option value="Lunas">Lunas</option>
+                        <option value="Belum Lunas">Belum Lunas</option>
+                    </select>
+                </div>
                 <button type="submit"
                     onclick="return confirm('Tandai pesanan ini sudah diambil pelanggan?')"
                     class="w-full bg-emerald-500 text-white text-sm font-bold py-2.5 rounded-xl hover:opacity-90 transition">
                     <i class="fas fa-check-circle mr-1"></i> Tandai Sudah Diambil
                 </button>
             </form>
+            @endif
+
+            @if($order->diambil && $order->status_bayar == 'Belum Lunas')
+            <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm mt-4">
+                <h3 class="text-sm font-bold text-gray-700 mb-4 uppercase tracking-widest">Update Pembayaran</h3>
+                <div class="p-3 bg-red-50 text-red-600 rounded-xl text-sm font-medium mb-4 flex items-center gap-2">
+                    <i class="fas fa-exclamation-circle"></i> Belum Lunas
+                </div>
+                <form action="{{ route('orders.update', $order->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="status_bayar" value="Lunas">
+                    <button type="submit"
+                        onclick="return confirm('Tandai pesanan ini sudah lunas?')"
+                        class="w-full bg-emerald-500 text-white text-sm font-bold py-2.5 rounded-xl hover:opacity-90 transition">
+                        <i class="fas fa-check mr-1"></i> Tandai Lunas
+                    </button>
+                </form>
+            </div>
             @endif
 
             @else

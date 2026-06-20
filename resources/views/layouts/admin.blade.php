@@ -67,7 +67,7 @@
                                 ? 'bg-cyan-600 text-white'
                                 : 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
                             <span class="w-2 h-2 rounded-full bg-current"></span>
-                            <span>Variasi Produk</span>
+                            <span>Kategori Produk</span>
                         </a>
                     </div>
                 </div>
@@ -102,6 +102,14 @@
                                 : 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
                             <span class="w-2 h-2 rounded-full bg-current"></span>
                             <span>Riwayat Transaksi</span>
+                        </a>
+                        <a href="{{ route('orders.piutang') }}"
+                            class="flex items-center gap-3 px-3 py-2 rounded-xl text-sm
+                            {{ request()->routeIs('orders.piutang')
+                                ? 'bg-cyan-600 text-white'
+                                : 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
+                            <span class="w-2 h-2 rounded-full bg-current"></span>
+                            <span>Piutang</span>
                         </a>
                         <a href="{{ route('pengeluaran.index') }}"
                             class="flex items-center gap-3 px-3 py-2 rounded-xl text-sm

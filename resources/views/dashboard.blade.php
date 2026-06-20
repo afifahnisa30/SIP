@@ -94,7 +94,13 @@
                             </p>
                             
                             <p class="text-sm font-black text-blue-600 mb-4">
-                                Mulai Rp {{ number_format($product->harga_dasar, 0, ',', '.') }} 
+                                @if(Auth::user()->tipe === 'Reseller' && $product->harga_reseller)
+                                    <span class="text-xs font-normal text-gray-400 line-through">Rp {{ number_format($product->harga_dasar, 0, ',', '.') }}</span>
+                                    Mulai Rp {{ number_format($product->harga_reseller, 0, ',', '.') }}
+                                    <span class="text-xs font-normal text-emerald-500">Harga Reseller</span>
+                                @else
+                                    Mulai Rp {{ number_format($product->harga_dasar, 0, ',', '.') }}
+                                @endif
                                 <span class="text-xs font-normal text-gray-400">
                                     {{ in_array($product->kategori, ['Spanduk', 'Stiker']) ? '/ meter²' : '/ lembar-box' }}
                                 </span>
@@ -252,10 +258,14 @@
             document.getElementById('modalProductCategory').innerText = "Kategori: " + product.kategori;
             
             document.getElementById('productId').value = product.id;
-            document.getElementById('productHargaDasar').value = product.harga_dasar;
+            
+            // Pakai harga reseller kalau ada
+            const isReseller = {{ Auth::user()->tipe === 'Reseller' ? 'true' : 'false' }};
+            const harga = (isReseller && product.harga_reseller) ? product.harga_reseller : product.harga_dasar;
+            
+            document.getElementById('productHargaDasar').value = harga;
             document.getElementById('productUkuranStandar').value = product.ukuran_standar || "";
-
-            document.getElementById('txtHargaDasar').innerText = "Rp " + new Intl.NumberFormat('id-ID').format(product.harga_dasar);
+            document.getElementById('txtHargaDasar').innerText = "Rp " + new Intl.NumberFormat('id-ID').format(harga);
 
             document.getElementById('inputPanjang').value = "";
             document.getElementById('inputLebar').value = "";

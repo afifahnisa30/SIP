@@ -53,6 +53,12 @@
                         class="w-full py-3 px-5 text-gray-700 bg-slate-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition text-sm">
                     <span class="text-xs text-gray-400 mt-1 block">*Per meter persegi untuk spanduk, atau per lembar/box untuk produk lain.</span>
                 </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Harga Reseller (Rp) <span class="text-gray-400 font-normal">(opsional)</span></label>
+                    <input type="number" name="harga_reseller" value="{{ old('harga_reseller') }}" placeholder="Contoh: 12000"
+                        class="w-full py-2.5 px-4 text-sm text-gray-700 bg-slate-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    <span class="text-xs text-gray-400 mt-1 block">*Kosongkan jika tidak ada harga khusus reseller</span>
+                </div>
             </div>
 
             <div>

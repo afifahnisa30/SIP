@@ -51,6 +51,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
     Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
     Route::post('/orders/store-admin', [OrderController::class, 'storeAdmin'])->name('orders.storeAdmin');
+    Route::get('/piutang', [OrderController::class, 'piutang'])->name('orders.piutang');
     // Admin kelola pesanan (Daftar, Hapus, Show, Edit, dll)
     Route::resource('orders', OrderController::class)->except(['store']);
     //kategori

@@ -13,6 +13,7 @@ class Product extends Model
         'nama',
         'kategori',
         'harga_dasar',
+        'harga_reseller',
         'image',
         'ukuran_standar',
         'deskripsi',

@@ -111,9 +111,10 @@ class DataController extends Controller
             'email'        => 'nullable|email|unique:users,email,' . $id,
             'phone_number' => 'required|string|unique:users,phone_number,' . $id,
             'role'         => 'required|in:admin,customer',
+            'tipe'         => 'required|in:Umum,Reseller',
         ]);
 
-        $user->update($request->only('name', 'email', 'phone_number', 'role'));
+        $user->update($request->only('name', 'email', 'phone_number', 'role', 'tipe',));
 
         return redirect()->back()->with('success', 'Data pengguna berhasil diperbarui!');
     }

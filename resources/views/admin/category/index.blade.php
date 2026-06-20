@@ -4,7 +4,7 @@
 
 <div class="flex items-center justify-between mb-6">
     <div>
-        <h2 class="text-xl font-bold text-gray-800">Variasi Produk</h2>
+        <h2 class="text-xl font-bold text-gray-800">Kategori Produk</h2>
         <p class="text-xs text-gray-400 mt-1">Kelola kategori produk percetakan</p>
     </div>
 </div>
