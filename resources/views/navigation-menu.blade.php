@@ -25,6 +25,13 @@
                         {{ __('Riwayat') }}
                     </x-nav-link>
                 </div>
+                @if(Auth::user()->tipe === 'Reseller')
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link href="{{ route('orders.tagihan') }}" :active="request()->routeIs('orders.tagihan')">
+                            {{ __('Tagihan') }}
+                        </x-nav-link>
+                    </div>
+                @endif
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('panduan') }}" :active="request()->routeIs('panduan')">
                         {{ __('Panduan') }}
@@ -162,6 +169,11 @@
             <x-responsive-nav-link href="{{ route('orders.riwayat.customer') }}" :active="request()->routeIs('orders.riwayat.customer')">
                 {{ __('Riwayat') }}
             </x-responsive-nav-link>
+            @if(Auth::user()->tipe === 'Reseller')
+                <x-responsive-nav-link href="{{ route('orders.tagihan') }}" :active="request()->routeIs('orders.tagihan')">
+                    {{ __('Tagihan') }}
+                </x-responsive-nav-link>
+            @endif
             <x-responsive-nav-link href="{{ route('panduan') }}" :active="request()->routeIs('panduan')">
                 </i> {{ __('Panduan') }}
             </x-responsive-nav-link>

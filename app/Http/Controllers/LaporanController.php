@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Pengeluaran;
+use App\Exports\LaporanPeriodeExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LaporanController extends Controller
 {
@@ -32,6 +34,7 @@ class LaporanController extends Controller
         if ($tanggal) {
             $orders = Order::with(['user', 'product'])
                         ->where('diambil', true)
+                        ->where('status_bayar', 'Lunas')
                         ->whereDate('updated_at', $tanggal)
                         ->get();
 
@@ -72,6 +75,7 @@ class LaporanController extends Controller
         if ($dari && $sampai) {
             $orders = Order::with(['user', 'product'])
                         ->where('diambil', true)
+                        ->where('status_bayar', 'Lunas')
                         ->whereDate('updated_at', '>=', $dari)
                         ->whereDate('updated_at', '<=', $sampai)
                         ->get();
@@ -97,6 +101,16 @@ class LaporanController extends Controller
         ));
     }
 
+    public function periodeExcel()
+    {
+        $dari   = request('dari', today()->startOfMonth()->toDateString());
+        $sampai = request('sampai', today()->toDateString());
+
+        return Excel::download(
+            new LaporanPeriodeExport($dari, $sampai),
+            'laporan-periode-' . $dari . '-sd-' . $sampai . '.xlsx'
+        );
+    }
     /**
      * Show the form for creating a new resource.
      */

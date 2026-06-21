@@ -17,18 +17,79 @@ class DataController extends Controller
 
     public function pelanggan(Request $request)
     {
-        $query = User::where('role', 'customer');
+        // Pelanggan Online
+        $onlineQuery = \App\Models\User::where('role', 'customer');
+        if ($request->filled('search')) {
+            $onlineQuery->where(function($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                ->orWhere('email', 'like', '%' . $request->search . '%')
+                ->orWhere('phone_number', 'like', '%' . $request->search . '%');
+            });
+        }
+        $onlineUsers = $onlineQuery->get()->map(function($user) {
+            return [
+                'id'          => $user->id,
+                'nama'        => $user->name,
+                'email'       => $user->email,
+                'no_telp'     => $user->phone_number,
+                'tipe'        => $user->tipe,
+                'kategori'    => 'Online',
+                'tgl_daftar'  => $user->created_at->format('d M Y'),
+                'is_user'     => true,
+            ];
+        });
+
+        // Pelanggan Offline — ambil unik berdasarkan nama + no_telp
+        $offlineQuery = \App\Models\Order::whereNull('user_id')
+                    ->select('nama_pelanggan', 'no_telp')
+                    ->groupBy('nama_pelanggan', 'no_telp');
 
         if ($request->filled('search')) {
-            $query->where(function($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('email', 'like', '%' . $request->search . '%')
-                  ->orWhere('phone_number', 'like', '%' . $request->search . '%');
+            $offlineQuery->where(function($q) use ($request) {
+                $q->where('nama_pelanggan', 'like', '%' . $request->search . '%')
+                ->orWhere('no_telp', 'like', '%' . $request->search . '%');
             });
         }
 
-        $users = $query->latest()->paginate(10)->appends(request()->query());
-        return view('admin.data.pelanggan', compact('users'));
+        $offlineUsers = $offlineQuery->get()->map(function($order) {
+            return [
+                'id'         => null,
+                'nama'       => $order->nama_pelanggan,
+                'email'      => '-',
+                'no_telp'    => $order->no_telp,
+                'tipe'       => 'Umum',
+                'kategori'   => 'Offline',
+                'tgl_daftar' => '-',
+                'is_user'    => false,
+            ];
+        });
+
+        // Filter kategori
+        if ($request->filled('kategori')) {
+            if ($request->kategori == 'Online') {
+                $allPelanggan = $onlineUsers;
+            } elseif ($request->kategori == 'Offline') {
+                $allPelanggan = $offlineUsers;
+            } else {
+                $allPelanggan = $onlineUsers->merge($offlineUsers);
+            }
+        } else {
+            $allPelanggan = $onlineUsers->merge($offlineUsers);
+        }
+
+        // Manual pagination
+        $page = $request->get('page', 1);
+        $perPage = 10;
+        $total = $allPelanggan->count();
+        $pelanggan = new \Illuminate\Pagination\LengthAwarePaginator(
+            $allPelanggan->forPage($page, $perPage),
+            $total,
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        return view('admin.data.pelanggan', compact('pelanggan'));
     }
 
     public function admin(Request $request)

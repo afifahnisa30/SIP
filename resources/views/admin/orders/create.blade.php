@@ -46,14 +46,25 @@
                 <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest">Detail Pesanan</h3>
 
                 <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Tipe Harga</label>
+                    <select name="tipe_harga" id="tipeHarga"
+                        class="w-full py-2.5 px-4 text-sm text-gray-700 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        <option value="umum">Umum</option>
+                        <option value="reseller">Reseller</option>
+                    </select>
+                </div>
+
+                <div>
                     <label class="block text-xs font-bold text-gray-600 mb-1">Produk</label>
                     <select name="product_id" id="productSelect" onchange="updateProduct(this)"
                         class="w-full py-2.5 px-4 text-sm text-gray-700 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                         <option value="">-- Pilih Produk --</option>
                         @foreach($products as $product)
                         <option value="{{ $product->id }}"
+                            data-nama="{{ $product->nama }}"
                             data-kategori="{{ $product->kategori }}"
                             data-harga="{{ $product->harga_dasar }}"
+                            data-reseller="{{ $product->harga_reseller ?? 0 }}"
                             data-ukuran="{{ $product->ukuran_standar }}"
                             {{ old('product_id') == $product->id ? 'selected' : '' }}>
                             {{ $product->nama }} — Rp {{ number_format($product->harga_dasar, 0, ',', '.') }}
@@ -134,31 +145,89 @@
     function updateProduct(select) {
         const option = select.options[select.selectedIndex];
         const kategori = option.dataset.kategori;
-        const harga = parseInt(option.dataset.harga) || 0;
+        const hargaDasar = parseInt(option.dataset.harga) || 0;
+        const hargaReseller = parseInt(option.dataset.reseller) || 0;
         const ukuran = option.dataset.ukuran || '';
 
         const groupMeteran = document.getElementById('groupMeteran');
         const groupQuantity = document.getElementById('groupQuantity');
         const estimasiBox = document.getElementById('estimasiBox');
 
-        document.getElementById('txtHargaDasar').innerText = 'Rp ' + harga.toLocaleString('id-ID');
         estimasiBox.classList.remove('hidden');
+
+        // Simpan data ke hidden field untuk dipakai hitungHarga
+        select.dataset.aktivHarga = hargaDasar;
+        select.dataset.aktivReseller = hargaReseller;
+        select.dataset.aktivKategori = kategori;
+        select.dataset.aktivUkuran = ukuran;
 
         if (kategori === 'Spanduk' || kategori === 'Stiker') {
             groupMeteran.classList.remove('hidden');
             groupQuantity.classList.add('hidden');
-            document.getElementById('inputPanjang').oninput = () => hitungHarga(harga, ukuran, kategori);
-            document.getElementById('inputLebar').oninput = () => hitungHarga(harga, ukuran, kategori);
+            document.getElementById('inputPanjang').oninput = () => hitungHarga();
+            document.getElementById('inputLebar').oninput = () => hitungHarga();
         } else {
             groupMeteran.classList.add('hidden');
             groupQuantity.classList.remove('hidden');
-            document.getElementById('inputQty').oninput = () => hitungHarga(harga, ukuran, kategori);
+            document.getElementById('inputQty').oninput = () => hitungHarga();
         }
 
-        hitungHarga(harga, ukuran, kategori);
+        hitungHarga();
     }
 
-    function hitungHarga(harga, ukuran, kategori) {
+   // Panggil saat halaman load
+    document.addEventListener('DOMContentLoaded', () => {
+        // Tambah event listener ke tipeHarga
+        document.getElementById('tipeHarga').addEventListener('change', function() {
+            updateHargaLabel();
+            hitungHarga();
+        });
+    });
+
+    function updateHargaLabel() {
+        const select = document.getElementById('productSelect');
+        const tipeHarga = document.getElementById('tipeHarga').value;
+
+        Array.from(select.options).forEach(option => {
+            if (!option.value) return;
+            const nama = option.dataset.nama;
+            const hargaDasar = parseInt(option.dataset.harga) || 0;
+            const hargaReseller = parseInt(option.dataset.reseller) || 0;
+
+            let harga;
+            if (tipeHarga == 'reseller' && hargaReseller > 0) {
+                harga = hargaReseller;
+            } else {
+                harga = hargaDasar;
+            }
+
+            option.text = nama + ' — Rp ' + harga.toLocaleString('id-ID');
+        });
+    }
+
+    
+    function hitungHarga() {
+        const select = document.getElementById('productSelect');
+        const option = select.options[select.selectedIndex];
+        if (!option.value) return;
+
+        console.log('harga dasar:', option.dataset.harga);
+        console.log('harga reseller:', option.dataset.reseller); // ← cek nilai ini
+        console.log('tipe harga:', document.getElementById('tipeHarga').value);
+        
+        // ... sisa kode
+
+        const kategori = option.dataset.kategori;
+        const hargaDasar = parseInt(option.dataset.harga) || 0;
+        const hargaReseller = parseInt(option.dataset.reseller) || 0;
+        const ukuran = option.dataset.ukuran || '';
+        const tipeHarga = document.getElementById('tipeHarga').value;
+
+        // Pilih harga sesuai tipe
+        const harga = (tipeHarga == 'reseller' && hargaReseller) ? hargaReseller : hargaDasar;
+
+        document.getElementById('txtHargaDasar').innerText = 'Rp ' + harga.toLocaleString('id-ID');
+
         let total = 0;
 
         if (kategori === 'Spanduk' || kategori === 'Stiker') {

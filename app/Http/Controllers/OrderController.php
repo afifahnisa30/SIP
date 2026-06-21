@@ -165,7 +165,7 @@ class OrderController extends Controller
         return redirect()->route('dashboard')->with('success', 'Pesanan Anda berhasil dikirim ke CV Salam Indah! Tim kami akan segera memproses berkas cetak Anda.');
     }
 
-        public function storeAdmin(Request $request)
+    public function storeAdmin(Request $request)
     {
         $request->validate([
             'nama_pelanggan' => 'required|string|max:255',
@@ -181,6 +181,11 @@ class OrderController extends Controller
 
         $product = \App\Models\Product::findOrFail($request->product_id);
         $totalHarga = 0;
+        
+        $hargaDasar = $product->harga_dasar;
+        if ($request->tipe_harga == 'reseller' && $product->harga_reseller) {
+            $hargaDasar = $product->harga_reseller;
+        }
 
         if ($product->kategori === 'Spanduk' || $product->kategori === 'Stiker') {
             $pCustomer = floatval($request->panjang);
@@ -195,11 +200,12 @@ class OrderController extends Controller
                     if ($size >= $lCustomer) { $lFinal = $size; break; }
                 }
             }
-            $totalHarga = $pFinal * $lFinal * $product->harga_dasar;
+            $totalHarga = $pFinal * $lFinal * $hargaDasar;
         } else {
             $qty = intval($request->quantity) ?: 1;
-            $totalHarga = $qty * $product->harga_dasar;
+            $totalHarga = $qty * $hargaDasar;
         }
+        
 
         $totalHargaFinal = ceil($totalHarga / 5000) * 5000;
 
@@ -234,6 +240,7 @@ class OrderController extends Controller
     {
         $query = Order::with(['user', 'product'])
                     ->where('diambil', true)
+                    ->where('status_bayar', 'Lunas')
                     ->latest();
 
         if ($request->filled('search')) {
@@ -291,6 +298,28 @@ class OrderController extends Controller
 
         return view('admin.orders.piutang', compact('orders', 'totalPiutang'));
     }
+    
+    public function tagihan()
+    {
+        // Hanya reseller yang bisa akses
+        if (Auth::user()->tipe !== 'Reseller') {
+            return redirect()->route('dashboard');
+        }
+
+        $orders = Order::with('product')
+                    ->where('user_id', Auth::id())
+                    ->where('diambil', true)
+                    ->where('status_bayar', 'Belum Lunas')
+                    ->latest()
+                    ->paginate(10);
+
+        $totalTagihan = Order::where('user_id', Auth::id())
+                            ->where('diambil', true)
+                            ->where('status_bayar', 'Belum Lunas')
+                            ->sum('total_harga');
+
+        return view('customer.tagihan', compact('orders', 'totalTagihan'));
+    }
 
     /**
      * Display the specified resource.
@@ -342,9 +371,11 @@ class OrderController extends Controller
         if ($request->has('status_bayar')) {
             $request->validate([
                 'status_bayar' => 'required|in:Lunas,Belum Lunas',
+                'metode_bayar' => 'nullable|in:Tunai,Transfer',
             ]);
             $order->update([
                 'status_bayar'  => $request->status_bayar,
+                'metode_bayar'  => $request->metode_bayar ?? $order->metode_bayar,
                 'tanggal_bayar' => $request->status_bayar == 'Lunas' ? now() : null,
             ]);
             return redirect()->back()->with('success', 'Status pembayaran berhasil diperbarui!');

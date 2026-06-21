@@ -11,9 +11,12 @@ class AdminController extends Controller
     public function index()
     {
         $pendingCount   = Order::where('status', 'Pending')->count();
-        $completedCount = Order::where('status', 'Selesai Cetak')->count();
+        $completedCount = Order::whereDate('updated_at', today())
+                                 ->where('status', 'Selesai Cetak')
+                                 ->count();
         $todayIncome    = Order::whereDate('updated_at', today())
                                 ->where('diambil', true)
+                                ->where('status_bayar', 'Lunas')
                                 ->sum('total_harga');
 
         $monthIncome = Order::whereMonth('updated_at', now()->month)

@@ -20,19 +20,25 @@
     </div>
 @endif
 
-{{-- SEARCH --}}
-<form method="GET" action="{{ route('data.pelanggan') }}" class="flex gap-3 mb-6">
+{{-- SEARCH & FILTER --}}
+<form method="GET" action="{{ route('data.pelanggan') }}" class="flex flex-wrap gap-3 mb-6">
     <div class="relative flex-1 max-w-sm">
         <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 text-sm"></i>
         <input type="text" name="search" value="{{ request('search') }}"
             placeholder="Cari nama, email, atau nomor HP..."
             class="w-full pl-10 pr-4 py-2.5 text-sm text-gray-700 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
     </div>
+    <select name="kategori"
+        class="min-w-[160px] py-2.5 px-4 text-sm text-gray-700 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+        <option value="">Semua</option>
+        <option value="Online" {{ request('kategori') == 'Online' ? 'selected' : '' }}>Online</option>
+        <option value="Offline" {{ request('kategori') == 'Offline' ? 'selected' : '' }}>Offline</option>
+    </select>
     <button type="submit"
         class="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-semibold rounded-2xl hover:opacity-90 transition">
         <i class="fas fa-search mr-1"></i> Cari
     </button>
-    @if(request('search'))
+    @if(request('search') || request('kategori'))
     <a href="{{ route('data.pelanggan') }}"
         class="px-5 py-2.5 bg-slate-100 text-slate-500 text-sm font-semibold rounded-2xl hover:bg-slate-200 transition">
         <i class="fas fa-times mr-1"></i> Reset
@@ -50,34 +56,47 @@
                     <th class="px-6 py-4 text-left">Nama</th>
                     <th class="px-6 py-4 text-left">Email</th>
                     <th class="px-6 py-4 text-left">No. HP</th>
+                    <th class="px-6 py-4 text-left">Kategori</th>
+                    <th class="px-6 py-4 text-left">Tipe</th>
                     <th class="px-6 py-4 text-left">Tgl Daftar</th>
                     <th class="px-6 py-4 text-center">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
-                @forelse($users as $user)
+                @forelse($pelanggan as $i => $p)
                 <tr class="text-gray-700 hover:bg-slate-50 transition">
                     <td class="px-6 py-4 text-gray-400">
-                        {{ ($users->currentPage() - 1) * $users->perPage() + $loop->iteration }}
+                        {{ ($pelanggan->currentPage() - 1) * $pelanggan->perPage() + $loop->iteration }}
                     </td>
                     <td class="px-6 py-4">
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-xs">
-                                {{ strtoupper(substr($user->name, 0, 1)) }}
+                            <div class="w-8 h-8 {{ $p['kategori'] == 'Online' ? 'bg-blue-100 text-blue-600' : 'bg-amber-100 text-amber-600' }} rounded-full flex items-center justify-center font-bold text-xs">
+                                {{ strtoupper(substr($p['nama'], 0, 1)) }}
                             </div>
-                            <span class="font-medium text-gray-800">{{ $user->name }}</span>
+                            <span class="font-medium text-gray-800">{{ $p['nama'] }}</span>
                         </div>
                     </td>
-                    <td class="px-6 py-4 text-gray-500">{{ $user->email ?? '-' }}</td>
-                    <td class="px-6 py-4 text-gray-500">{{ $user->phone_number }}</td>
-                    <td class="px-6 py-4 text-xs text-gray-400">{{ $user->created_at->format('d M Y') }}</td>
+                    <td class="px-6 py-4 text-gray-500">{{ $p['email'] }}</td>
+                    <td class="px-6 py-4 text-gray-500">{{ $p['no_telp'] ?? '-' }}</td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-1 rounded-full text-xs font-medium {{ $p['kategori'] == 'Online' ? 'bg-blue-50 text-blue-600' : 'bg-amber-50 text-amber-600' }}">
+                            {{ $p['kategori'] }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-1 rounded-full text-xs font-medium {{ $p['tipe'] == 'Reseller' ? 'bg-purple-50 text-purple-600' : 'bg-gray-50 text-gray-500' }}">
+                            {{ $p['tipe'] }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-xs text-gray-400">{{ $p['tgl_daftar'] }}</td>
                     <td class="px-6 py-4">
                         <div class="flex items-center justify-center gap-2">
-                            <a href="{{ route('data.edit', $user->id) }}"
+                            @if($p['is_user'])
+                            <a href="{{ route('data.edit', $p['id']) }}"
                                 class="w-8 h-8 flex items-center justify-center bg-amber-50 text-amber-500 rounded-xl hover:bg-amber-100 transition">
                                 <i class="fas fa-pen text-xs"></i>
                             </a>
-                            <form action="{{ route('data.destroy', $user->id) }}" method="POST"
+                            <form action="{{ route('data.destroy', $p['id']) }}" method="POST"
                                 onsubmit="return confirm('Yakin hapus pelanggan ini?')">
                                 @csrf
                                 @method('DELETE')
@@ -86,12 +105,15 @@
                                     <i class="fas fa-trash text-xs"></i>
                                 </button>
                             </form>
+                            @else
+                            <span class="text-xs text-gray-300 italic">Walk-in</span>
+                            @endif
                         </div>
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="px-6 py-12 text-center text-gray-400 text-xs">
+                    <td colspan="8" class="px-6 py-12 text-center text-gray-400 text-xs">
                         <i class="fas fa-users text-2xl mb-2 block"></i>
                         Belum ada pelanggan terdaftar
                     </td>
@@ -101,9 +123,9 @@
         </table>
     </div>
 
-    @if($users->hasPages())
+    @if($pelanggan->hasPages())
     <div class="px-6 py-4 border-t border-gray-100">
-        {{ $users->links() }}
+        {{ $pelanggan->links() }}
     </div>
     @endif
 </div>

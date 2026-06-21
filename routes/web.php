@@ -34,6 +34,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('orders.my');
     Route::get('/my-orders/{id}', [OrderController::class, 'detailOrder'])->name('orders.my.show');
     Route::get('/riwayat', [OrderController::class, 'riwayatCustomer'])->name('orders.riwayat.customer');
+    Route::get('/tagihan', [OrderController::class, 'tagihan'])->name('orders.tagihan');
     Route::get('/panduan', function () {return view('customer.panduan');
 })->name('panduan');
     });
@@ -61,6 +62,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     //laporan
     Route::get('/laporan/harian', [LaporanController::class, 'harian'])->name('laporan.harian');
     Route::get('/laporan/periode', [LaporanController::class, 'periode'])->name('laporan.periode');
+    Route::get('/laporan/periode/excel', [LaporanController::class, 'periodeExcel'])->name('laporan.periode.excel');
     //data pengguna
     Route::get('/data/pelanggan', [DataController::class, 'pelanggan'])->name('data.pelanggan');
     Route::get('/data/admin', [DataController::class, 'admin'])->name('data.admin');

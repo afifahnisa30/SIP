@@ -35,7 +35,7 @@
             <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
                 <i class="fas fa-check-circle text-white"></i>
             </div>
-            <span class="text-xs bg-white/20 px-2 py-1 rounded-full font-medium">Total</span>
+            <span class="text-xs bg-white/20 px-2 py-1 rounded-full font-medium">Hari ini</span>
         </div>
         <p class="text-3xl font-black mb-1">{{ $completedCount }}</p>
         <p class="text-xs text-blue-200 uppercase tracking-widest font-medium">Selesai Cetak</p>

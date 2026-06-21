@@ -4,7 +4,7 @@
 
 <div class="flex items-center justify-between mb-6">
     <div>
-        <h2 class="text-xl font-bold text-gray-800">Piutang</h2>
+        <h2 class="text-xl font-bold text-gray-800">Piutang Pelanggan</h2>
         <p class="text-xs text-gray-400 mt-1">Daftar pesanan yang belum dibayar</p>
     </div>
     {{-- <div class="bg-[#DC2626] px-5 py-3 rounded-2xl text-white text-right">
@@ -79,17 +79,12 @@
                                 title="Detail">
                                 <i class="fas fa-eye text-xs"></i>
                             </a>
-                            <form action="{{ route('orders.update', $order->id) }}" method="POST"
-                                onsubmit="return confirm('Tandai pesanan ini sudah lunas?')">
-                                @csrf
-                                @method('PUT')
-                                <input type="hidden" name="status_bayar" value="Lunas">
-                                <button type="submit"
-                                    class="w-8 h-8 flex items-center justify-center bg-emerald-50 text-emerald-500 rounded-xl hover:bg-emerald-100 transition"
-                                    title="Tandai Lunas">
-                                    <i class="fas fa-check text-xs"></i>
-                                </button>
-                            </form>
+                            <button type="button"
+                                onclick="openLunasModal({{ $order->id }}, '{{ $order->user ? $order->user->name : $order->nama_pelanggan }}', {{ $order->total_harga }})"
+                                class="w-8 h-8 flex items-center justify-center bg-emerald-50 text-emerald-500 rounded-xl hover:bg-emerald-100 transition"
+                                title="Tandai Lunas">
+                                <i class="fas fa-check text-xs"></i>
+                            </button>
                         </div>
                     </td>
                 </tr>
@@ -111,5 +106,66 @@
     </div>
     @endif
 </div>
+
+{{-- MODAL LUNAS --}}
+<div id="lunasModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full border border-gray-100">
+        <div class="bg-gradient-to-r from-emerald-500 to-teal-600 p-6 text-white flex justify-between items-center rounded-t-3xl">
+            <h3 class="text-lg font-black">Konfirmasi Pelunasan</h3>
+            <button type="button" onclick="closeLunasModal()" class="text-white/80 hover:text-white text-xl">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="p-6">
+            <div class="bg-slate-50 p-4 rounded-2xl mb-4">
+                <p class="text-xs text-gray-400 mb-1">Pelanggan</p>
+                <p id="lunasNama" class="font-bold text-gray-800 text-sm"></p>
+                <p class="text-xs text-gray-400 mt-2 mb-1">Total Tagihan</p>
+                <p id="lunasTotal" class="font-bold text-gray-800 text-lg"></p>
+            </div>
+
+            <form id="lunasForm" method="POST" class="space-y-4">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="status_bayar" value="Lunas">
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Metode Pembayaran</label>
+                    <select name="metode_bayar"
+                        class="w-full py-2.5 px-4 text-sm text-gray-700 bg-slate-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        <option value="Tunai">Tunai</option>
+                        <option value="Transfer">Transfer</option>
+                    </select>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeLunasModal()"
+                        class="w-1/3 border border-gray-200 text-gray-500 text-sm font-bold py-2.5 rounded-xl hover:bg-gray-50 transition">
+                        Batal
+                    </button>
+                    <button type="submit"
+                        class="w-2/3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-bold py-2.5 rounded-xl hover:opacity-90 transition">
+                        <i class="fas fa-check mr-1"></i> Konfirmasi Lunas
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+<script>
+    function openLunasModal(id, nama, total) {
+        document.getElementById('lunasForm').action = '/admin/orders/' + id;
+        document.getElementById('lunasNama').innerText = nama;
+        document.getElementById('lunasTotal').innerText = 'Rp ' + total.toLocaleString('id-ID');
+        document.getElementById('lunasModal').classList.remove('hidden');
+    }
+
+    function closeLunasModal() {
+        document.getElementById('lunasModal').classList.add('hidden');
+    }
+</script>
+@endpush
 
 @endsection

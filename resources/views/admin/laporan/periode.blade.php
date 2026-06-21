@@ -27,9 +27,15 @@
         <i class="fas fa-search mr-1"></i> Tampilkan
     </button>
     @if($dari && $sampai)
+    <a href="{{ route('laporan.periode.excel', ['dari' => $dari, 'sampai' => $sampai]) }}"
+        class="px-5 py-2.5 bg-emerald-600 text-white text-sm font-semibold rounded-2xl hover:opacity-90 transition">
+        <i class="fas fa-file-excel mr-1"></i> Download Excel
+    </a>
+    @endif
+    @if($dari && $sampai)
     <button type="button" onclick="window.print()"
         class="px-5 py-2.5 bg-slate-700 text-white text-sm font-semibold rounded-2xl hover:opacity-90 transition">
-        <i class="fas fa-print mr-1"></i> Print Laporan
+        <i class="fas fa-print mr-1"></i> Print PDF
     </button>
     @endif
 </form>
