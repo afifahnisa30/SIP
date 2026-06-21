@@ -257,7 +257,15 @@
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $order->user ? $order->user->name : $order->nama_pelanggan }}</td>
                     <td>{{ $order->product->nama }}</td>
-                    <td>@if($order->panjang && $order->lebar){{ $order->panjang }}x{{ $order->lebar }}m@elseif($order->quantity){{ $order->quantity }} pcs@else-@endif</td>
+                    <td>
+                        @if(($order->panjang != 0 && $order->panjang != null) && ($order->lebar != 0 && $order->lebar != null))
+                            {{ $order->panjang }}x{{ $order->lebar }}m
+                        @elseif($order->quantity != 0 && $order->quantity != null)
+                            {{ $order->quantity }} pcs
+                        @else
+                            -
+                        @endif
+                    </td>
                     <td style="text-align:right">Rp {{ number_format($order->total_harga, 0, ',', '.') }}</td>
                     <td>{{ $order->metode_bayar }}</td>
                 </tr>
