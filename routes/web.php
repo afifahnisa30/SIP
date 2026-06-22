@@ -8,6 +8,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PengeluaranController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\DataController;
+use App\Http\Controllers\ProfilController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Models\Order;
@@ -35,8 +36,12 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/my-orders/{id}', [OrderController::class, 'detailOrder'])->name('orders.my.show');
     Route::get('/riwayat', [OrderController::class, 'riwayatCustomer'])->name('orders.riwayat.customer');
     Route::get('/tagihan', [OrderController::class, 'tagihan'])->name('orders.tagihan');
-    Route::get('/panduan', function () {return view('customer.panduan');
-})->name('panduan');
+    Route::get('/panduan', function () {return view('customer.panduan'); })->name('panduan');
+    Route::get('/profil/customer', [ProfilController::class, 'customerProfile'])->name('customer.profile');
+    Route::get('/profil', [ProfilController::class, 'customerProfile'])->name('customer.profil.show');
+    Route::put('/profil/update', [ProfilController::class, 'update'])->name('customer.profil.update');
+    Route::put('/profil/password', [ProfilController::class, 'updatePassword'])->name('customer.profil.password');
+    
     });
 
 // RUTE ADMIN
@@ -70,4 +75,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::get('/data/{id}/edit', [DataController::class, 'edit'])->name('data.edit');
     Route::put('/data/{id}', [DataController::class, 'update'])->name('data.update');
     Route::delete('/data/{id}', [DataController::class, 'destroy'])->name('data.destroy');
+
+    Route::get('/profil', [ProfilController::class, 'adminProfile'])->name('admin.profile');
+    Route::get('/profil', [ProfilController::class, 'adminProfile'])->name('admin.profil.show');
+    Route::put('/profil/update', [ProfilController::class, 'update'])->name('admin.profil.update');
+    Route::put('/profil/password', [ProfilController::class, 'updatePassword'])->name('admin.profil.password');
     });

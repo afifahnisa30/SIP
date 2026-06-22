@@ -203,10 +203,10 @@
                     </button>
                     <div>
                         <h2 class="font-semibold text-lg">
-                            Halo, {{ Auth::user()->name }} 👋
+                            Halo, {{ Auth::user()->name }} 
                         </h2>
                         <p class="text-xs text-blue-100">
-                            Kelola produk, pesanan, dan laporan percetakan CV Salam Indah
+                            Kelola produk, pesanan, dan laporan percetakan Salam Indah
                         </p>
                     </div>
                 </div>
@@ -218,8 +218,7 @@
                     </button>
                 <!-- Dropdown menu tetap sama seperti sebelumnya -->
                     <div x-show="open" @click.away="open = false" class="absolute right-0 mt-3 w-48 bg-white text-gray-700 rounded-2xl shadow-xl py-2 z-50">
-                        <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm hover:bg-slate-50">Profil</a>
-                        <form method="POST" action="{{ route('logout') }}">
+                        <a href="{{ route('admin.profil.show') }}" class="block px-4 py-2 text-sm hover:bg-slate-50">Profil</a>                        <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-slate-50">Logout</button>
                         </form>
