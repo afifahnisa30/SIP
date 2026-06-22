@@ -5,7 +5,7 @@
 <div class="flex items-center justify-between mb-6">
     <div>
         <h2 class="text-xl font-bold text-gray-800">Data Admin</h2>
-        <p class="text-xs text-gray-400 mt-1">Kelola akun admin CV Salam Indah</p>
+        <p class="text-xs text-gray-400 mt-1">Kelola akun admin Percetakan Salam Indah</p>
     </div>
     <button onclick="document.getElementById('modalTambahAdmin').classList.remove('hidden')"
         class="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-semibold px-5 py-2.5 rounded-2xl shadow hover:opacity-90 transition">

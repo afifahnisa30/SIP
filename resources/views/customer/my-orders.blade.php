@@ -8,7 +8,7 @@
             </div>
             <a href="{{ route('dashboard') }}"
                 class="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white text-sm font-semibold px-5 py-2.5 rounded-2xl transition">
-                <i class="fas fa-arrow-left"></i> Kembali ke Katalog
+                <i class="fas fa-arrow-left"></i> Kembali ke Beranda
             </a>
         </div>
     </div>

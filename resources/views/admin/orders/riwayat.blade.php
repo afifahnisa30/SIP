@@ -93,7 +93,7 @@
                     <th class="px-6 py-4 text-left">Detail</th>
                     <th class="px-6 py-4 text-left">Total</th>
                     <th class="px-6 py-4 text-left">Tgl Pesan</th>
-                    <th class="px-6 py-4 text-left">Tgl Diambil</th>
+                    <th class="px-6 py-4 text-left">Tgl Bayar</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">

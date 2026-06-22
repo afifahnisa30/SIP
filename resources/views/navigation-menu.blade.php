@@ -12,8 +12,13 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                         {{ __('Katalog') }}
+                        {{ __('Beranda') }}
                     </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('katalog') }}" :active="request()->routeIs('katalog')">
+                    {{ __('Katalog') }}
+                </x-nav-link>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('orders.my') }}" :active="request()->routeIs('orders.my') || request()->routeIs('orders.my.show')">
@@ -32,11 +37,11 @@
                         </x-nav-link>
                     </div>
                 @endif
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                {{-- <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('panduan') }}" :active="request()->routeIs('panduan')">
                         {{ __('Panduan') }}
                     </x-nav-link>
-                </div>
+                </div> --}}
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:ms-6">
@@ -167,6 +172,9 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+                {{ __('Beranda') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link href="{{ route('katalog') }}" :active="request()->routeIs('katalog')">
                 {{ __('Katalog') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link href="{{ route('orders.my') }}" :active="request()->routeIs('orders.my') || request()->routeIs('orders.my.show')">
@@ -180,9 +188,9 @@
                     {{ __('Tagihan') }}
                 </x-responsive-nav-link>
             @endif
-            <x-responsive-nav-link href="{{ route('panduan') }}" :active="request()->routeIs('panduan')">
+            {{-- <x-responsive-nav-link href="{{ route('panduan') }}" :active="request()->routeIs('panduan')">
                 </i> {{ __('Panduan') }}
-            </x-responsive-nav-link>
+            </x-responsive-nav-link> --}}
         </div>
 
         <!-- Responsive Settings Options -->

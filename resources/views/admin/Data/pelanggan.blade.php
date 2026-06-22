@@ -5,7 +5,7 @@
 <div class="flex items-center justify-between mb-6">
     <div>
         <h2 class="text-xl font-bold text-gray-800">Data Pelanggan</h2>
-        <p class="text-xs text-gray-400 mt-1">Kelola data pelanggan CV Salam Indah</p>
+        <p class="text-xs text-gray-400 mt-1">Kelola data pelanggan Percetakan Salam Indah</p>
     </div>
 </div>
 

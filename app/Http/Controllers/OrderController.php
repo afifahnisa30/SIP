@@ -89,7 +89,8 @@ class OrderController extends Controller
             'lebar' => 'nullable|numeric|min:0.1',
             'quantity' => 'nullable|integer|min:1',
         ]);
-
+        
+        
         // 2. Ambil Data Produk Asli dari Database untuk Keamanan Harga
         $product = Product::findOrFail($request->product_id);
         $totalHarga = 0;
@@ -161,8 +162,8 @@ class OrderController extends Controller
             'status' => 'Pending',
         ]);
 
-        // 7. Alihkan Kembali ke Dashboard dengan Pesan Sukses Berbunga-bunga
-        return redirect()->route('dashboard')->with('success', 'Pesanan Anda berhasil dikirim ke CV Salam Indah! Tim kami akan segera memproses berkas cetak Anda.');
+        // 7. Alihkan Kembali ke Dashboard dengan Pesan Sukses
+        return redirect()->route('dashboard')->with('success', 'Pesanan Anda berhasil dibuat! produk akan diproses');
     }
 
     public function storeAdmin(Request $request)
