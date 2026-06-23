@@ -125,11 +125,11 @@
                             </div>
 
                             @if(Auth::user()->role === 'admin')
-                                <x-dropdown-link href="{{ route('admin.profile') }}">
+                                <x-dropdown-link href="{{ route('admin.profil.show') }}">
                                     {{ __('Profil Admin') }}
                                 </x-dropdown-link>
                             @else
-                                <x-dropdown-link href="{{ route('customer.profile') }}">
+                                <x-dropdown-link href="{{ route('customer.profil.show') }}">
                                     {{ __('Profil Saya') }}
                                 </x-dropdown-link>
                             @endif
@@ -212,11 +212,11 @@
                 <!-- Account Management -->
 
                 @if(Auth::user()->role === 'admin')
-                    <x-responsive-nav-link href="{{ route('admin.profile') }}">
+                    <x-responsive-nav-link href="{{ route('admin.profil.show') }}">
                          {{ __('Profil Admin') }}
                     </x-responsive-nav-link>
                 @else
-                    <<x-responsive-nav-link href="{{ route('customer.profile') }}">
+                    <<x-responsive-nav-link href="{{ route('customer.profil.show') }}">
                         {{ __('Profil Saya') }}
                     </x-responsive-nav-link>
                 @endif

@@ -46,7 +46,6 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         return view('customer.katalog', compact('categories', 'products'));
     })->name('katalog');
 
-    // Customer hanya bisa store order
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('orders.my');
     Route::get('/my-orders/{id}', [OrderController::class, 'detailOrder'])->name('orders.my.show');
@@ -82,6 +81,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::resource('pengeluaran', PengeluaranController::class)->only(['index', 'store', 'update', 'destroy']);
     //laporan
     Route::get('/laporan/harian', [LaporanController::class, 'harian'])->name('laporan.harian');
+    Route::get('/laporan/harian/excel', [LaporanController::class, 'harianExcel'])->name('laporan.harian.excel');
     Route::get('/laporan/periode', [LaporanController::class, 'periode'])->name('laporan.periode');
     Route::get('/laporan/periode/excel', [LaporanController::class, 'periodeExcel'])->name('laporan.periode.excel');
     //data pengguna
@@ -91,7 +91,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::get('/data/{id}/edit', [DataController::class, 'edit'])->name('data.edit');
     Route::put('/data/{id}', [DataController::class, 'update'])->name('data.update');
     Route::delete('/data/{id}', [DataController::class, 'destroy'])->name('data.destroy');
-
+    //profil
     Route::get('/profil', [ProfilController::class, 'adminProfile'])->name('admin.profile');
     Route::get('/profil', [ProfilController::class, 'adminProfile'])->name('admin.profil.show');
     Route::put('/profil/update', [ProfilController::class, 'update'])->name('admin.profil.update');

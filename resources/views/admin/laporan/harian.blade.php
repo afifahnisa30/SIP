@@ -19,11 +19,17 @@
         <i class="fas fa-search mr-1"></i> Tampilkan Data
     </button>
     @if($tanggal)
+    <a href="{{ route('laporan.harian.excel', ['tanggal' => $tanggal]) }}"
+        class="px-5 py-2.5 bg-emerald-600 text-white text-sm font-semibold rounded-2xl hover:opacity-90 transition">
+        <i class="fas fa-file-excel mr-1"></i> Download Excel
+    </a>
+    @endif
+    {{-- @if($tanggal)
     <button type="button" onclick="window.print()"
         class="px-5 py-2.5 bg-slate-700 text-white text-sm font-semibold rounded-2xl hover:opacity-90 transition">
         <i class="fas fa-print mr-1"></i> Print PDF
     </button>
-    @endif
+    @endif --}}
 </form>
 
 <div id="printArea">

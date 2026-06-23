@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Pengeluaran;
 use App\Exports\LaporanPeriodeExport;
+use App\Exports\LaporanHarianExport;
 use Maatwebsite\Excel\Facades\Excel;
+
 
 class LaporanController extends Controller
 {
@@ -36,6 +38,7 @@ class LaporanController extends Controller
                         ->where('diambil', true)
                         ->where('status_bayar', 'Lunas')
                         ->whereDate('updated_at', $tanggal)
+                        ->orderBy('updated_at', 'asc')
                         ->get();
 
             $pengeluaran = Pengeluaran::whereDate('tanggal', $tanggal)->get();
@@ -78,6 +81,7 @@ class LaporanController extends Controller
                         ->where('status_bayar', 'Lunas')
                         ->whereDate('updated_at', '>=', $dari)
                         ->whereDate('updated_at', '<=', $sampai)
+                        ->orderBy('updated_at', 'asc')
                         ->get();
 
             $pengeluaran = Pengeluaran::whereDate('tanggal', '>=', $dari)
@@ -109,6 +113,15 @@ class LaporanController extends Controller
         return Excel::download(
             new LaporanPeriodeExport($dari, $sampai),
             'laporan-periode-' . $dari . '-sd-' . $sampai . '.xlsx'
+        );
+    }
+
+    public function harianExcel()
+    {
+        $tanggal = request('tanggal', today()->toDateString());
+        return Excel::download(
+            new LaporanHarianExport($tanggal),
+            'laporan-harian-' . $tanggal . '.xlsx'
         );
     }
     /**
