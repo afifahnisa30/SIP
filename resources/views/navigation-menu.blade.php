@@ -22,7 +22,14 @@
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('orders.my') }}" :active="request()->routeIs('orders.my') || request()->routeIs('orders.my.show')">
-                        {{ __('Pesanan') }}
+                        <div class="relative">
+                            {{ __('Pesanan') }}
+                            @if(isset($pendingCount) && $pendingCount > 0)
+                                <span class="absolute -top-2 -right-6 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">
+                                    {{ $pendingCount > 9 ? '9+' : $pendingCount }}
+                                </span>
+                            @endif
+                        </div>
                     </x-nav-link>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
@@ -177,8 +184,15 @@
             <x-responsive-nav-link href="{{ route('katalog') }}" :active="request()->routeIs('katalog')">
                 {{ __('Katalog') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link href="{{ route('orders.my') }}" :active="request()->routeIs('orders.my') || request()->routeIs('orders.my.show')">
-                {{ __('Pesanan') }}
+            <x-responsive-nav-link href="{{ route('orders.my') }}" :active="request()->routeIs('orders.my')">
+                    <div class="flex items-center justify-between w-full">
+                        <span>{{ __('Pesanan') }}</span>
+                        @if($pendingCount > 0)
+                        <span class="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
+                            {{ $pendingCount }}
+                        </span>
+                    @endif
+                </div>
             </x-responsive-nav-link>
             <x-responsive-nav-link href="{{ route('orders.riwayat.customer') }}" :active="request()->routeIs('orders.riwayat.customer')">
                 {{ __('Riwayat') }}

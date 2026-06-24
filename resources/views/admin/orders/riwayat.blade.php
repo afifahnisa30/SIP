@@ -5,7 +5,7 @@
 <div class="flex items-center justify-between mb-6">
     <div>
         <h2 class="text-xl font-bold text-gray-800">Riwayat Transaksi</h2>
-        <p class="text-xs text-gray-400 mt-1">Pesanan yang sudah selesai dan diambil pelanggan</p>
+        <p class="text-xs text-gray-400 mt-1">Pesanan yang sudah dibayar dan diambil pelanggan</p>
     </div>
 </div>
 

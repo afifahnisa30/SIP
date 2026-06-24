@@ -259,7 +259,8 @@ class OrderController extends Controller
         }
 
         // Cards — default hari ini, kalau ada filter ikut filter
-        $cardQuery = Order::where('diambil', true);
+        $cardQuery = Order::where('diambil', true)
+                            ->where('status_bayar', 'Lunas');
         if ($request->filled('dari') && $request->filled('sampai')) {
             $cardQuery->whereDate('updated_at', '>=', $request->dari)
                     ->whereDate('updated_at', '<=', $request->sampai);

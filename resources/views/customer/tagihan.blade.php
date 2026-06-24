@@ -4,7 +4,7 @@
         <div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
                 <h1 class="text-3xl font-black tracking-tight">Tagihan Saya</h1>
-                <p class="mt-2 text-red-100 text-sm">Daftar pesanan yang belum dibayar.</p>
+                <p class="mt-2 text-red-100 text-sm">Daftar pesanan yang sudah di ambil namun belum dibayar.</p>
             </div>
             <div class="flex items-center gap-4">
                 <div class="bg-white/10 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/20 shadow-lg flex items-center gap-3">

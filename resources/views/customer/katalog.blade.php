@@ -139,7 +139,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1">Upload File Desain Anda</label>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Upload Desain/Contoh Konsep Anda</label>
                     <input type="file" name="file_desain" required
                         class="w-full text-xs text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                 </div>
@@ -180,71 +180,80 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-    <script>
-        const modal = document.getElementById('orderModal');
-        const groupMeteran = document.getElementById('groupMeteran');
-        const groupQuantity = document.getElementById('groupQuantity');
-        const rowPerhitungan = document.getElementById('rowPerhitungan');
+   <script>
+    const modal = document.getElementById('orderModal');
+    const groupMeteran = document.getElementById('groupMeteran');
+    const groupQuantity = document.getElementById('groupQuantity');
+    const rowPerhitungan = document.getElementById('rowPerhitungan');
 
-        function openOrderModal(product) {
-            modal.classList.remove('hidden');
-            document.getElementById('modalProductName').innerText = "Pesan: " + product.nama;
-            document.getElementById('modalProductCategory').innerText = "Kategori: " + product.kategori;
-            document.getElementById('productId').value = product.id;
+    function openOrderModal(product) {
+        modal.classList.remove('hidden');
+        document.getElementById('modalProductName').innerText = "Pesan: " + product.nama;
+        document.getElementById('modalProductCategory').innerText = "Kategori: " + product.kategori;
+        document.getElementById('productId').value = product.id;
 
-            const isReseller = {{ Auth::user()->tipe === 'Reseller' ? 'true' : 'false' }};
-            const harga = (isReseller && product.harga_reseller) ? product.harga_reseller : product.harga_dasar;
+        const isReseller = {{ Auth::user()->tipe === 'Reseller' ? 'true' : 'false' }};
+        const harga = (isReseller && product.harga_reseller) ? product.harga_reseller : product.harga_dasar;
 
-            document.getElementById('productHargaDasar').value = harga;
-            document.getElementById('productUkuranStandar').value = product.ukuran_standar || "";
-            document.getElementById('txtHargaDasar').innerText = "Rp " + new Intl.NumberFormat('id-ID').format(harga);
-            document.getElementById('inputPanjang').value = "";
-            document.getElementById('inputLebar').value = "";
-            document.getElementById('inputQty').value = 1;
+        document.getElementById('productHargaDasar').value = harga;
+        document.getElementById('productUkuranStandar').value = product.ukuran_standar || "";
+        document.getElementById('txtHargaDasar').innerText = "Rp " + new Intl.NumberFormat('id-ID').format(harga);
+        
+        // Reset nilai
+        document.getElementById('inputPanjang').value = "";
+        document.getElementById('inputLebar').value = "";
+        document.getElementById('inputQty').value = 1;
 
-            if (product.kategori === 'Spanduk' || product.kategori === 'Stiker') {
-                groupMeteran.classList.remove('hidden');
-                rowPerhitungan.classList.remove('hidden');
-                groupQuantity.classList.add('hidden');
-                document.getElementById('inputPanjang').addEventListener('input', hitungHarga);
-                document.getElementById('inputLebar').addEventListener('input', hitungHarga);
-            } else {
-                groupMeteran.classList.add('hidden');
-                rowPerhitungan.classList.add('hidden');
-                groupQuantity.classList.remove('hidden');
-                document.getElementById('inputQty').addEventListener('input', hitungHarga);
-            }
-            hitungHarga();
+        // Tampilkan Quantity untuk SEMUA kategori sekarang
+        groupQuantity.classList.remove('hidden'); 
+
+        if (product.kategori === 'Spanduk' || product.kategori === 'Stiker') {
+            groupMeteran.classList.remove('hidden');
+            rowPerhitungan.classList.remove('hidden');
+        } else {
+            groupMeteran.classList.add('hidden');
+            rowPerhitungan.classList.add('hidden');
         }
 
-        function closeOrderModal() {
+        // Pasang event listener ke semua input agar perhitungan real-time
+        document.getElementById('inputPanjang').oninput = hitungHarga;
+        document.getElementById('inputLebar').oninput = hitungHarga;
+        document.getElementById('inputQty').oninput = hitungHarga;
+        
+        hitungHarga();
+    }
+    
+    function closeOrderModal() {
             modal.classList.add('hidden');
         }
 
-        function hitungHarga() {
-            const categoryText = document.getElementById('modalProductCategory').innerText;
-            const hargaDasar = parseInt(document.getElementById('productHargaDasar').value) || 0;
-            let totalHarga = 0;
+    function hitungHarga() {
+        const categoryText = document.getElementById('modalProductCategory').innerText;
+        const hargaDasar = parseInt(document.getElementById('productHargaDasar').value) || 0;
+        const qty = parseInt(document.getElementById('inputQty').value) || 1; // Ambil nilai Qty
+        let totalHarga = 0;
 
-            if (categoryText.includes('Spanduk') || categoryText.includes('Stiker')) {
-                let p = parseFloat(document.getElementById('inputPanjang').value) || 0;
-                let l = parseFloat(document.getElementById('inputLebar').value) || 0;
-                let strUkuran = document.getElementById('productUkuranStandar').value;
-                let bahanStandar = strUkuran ? strUkuran.split(',').map(Number).sort((a,b) => a-b) : [1, 1.5, 2, 3];
-                let lFinal = l;
-                if (p > 0 && l > 0) {
-                    let found = bahanStandar.find(size => size >= l);
-                    if (found) lFinal = found;
-                }
-                totalHarga = p * lFinal * hargaDasar;
-                document.getElementById('txtDetailHitung').innerText = p + "m x " + lFinal + "m = " + (p * lFinal).toFixed(2) + " m²";
-            } else {
-                let qty = parseInt(document.getElementById('inputQty').value) || 1;
-                totalHarga = qty * hargaDasar;
+        if (categoryText.includes('Spanduk') || categoryText.includes('Stiker')) {
+            let p = parseFloat(document.getElementById('inputPanjang').value) || 0;
+            let l = parseFloat(document.getElementById('inputLebar').value) || 0;
+            let strUkuran = document.getElementById('productUkuranStandar').value;
+            let bahanStandar = strUkuran ? strUkuran.split(',').map(Number).sort((a,b) => a-b) : [1, 1.5, 2, 3];
+            
+            let lFinal = l;
+            if (p > 0 && l > 0) {
+                let found = bahanStandar.find(size => size >= l);
+                if (found) lFinal = found;
             }
-
-            let totalBulat = Math.ceil(totalHarga / 5000) * 5000;
-            document.getElementById('txtTotalHarga').innerText = "Rp " + new Intl.NumberFormat('id-ID').format(totalBulat);
+            // Rumus: Panjang x Lebar x Harga x Jumlah
+            totalHarga = p * lFinal * hargaDasar * qty;
+            document.getElementById('txtDetailHitung').innerText = p + "m x " + lFinal + "m x " + qty + " pcs = " + (p * lFinal * qty).toFixed(2) + " m²";
+        } else {
+            // Rumus: Harga x Jumlah
+            totalHarga = qty * hargaDasar;
         }
-    </script>
+
+        let totalBulat = Math.ceil(totalHarga / 5000) * 5000;
+        document.getElementById('txtTotalHarga').innerText = "Rp " + new Intl.NumberFormat('id-ID').format(totalBulat);
+    }
+</script>
 </x-app-layout>
